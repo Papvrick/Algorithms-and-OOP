@@ -8,7 +8,7 @@ using std::cin;
 using std::endl;
 using std::min;
 
-// Генерация симметричной матрицы стоимостей маршрутов
+// Р“РµРЅРµСЂР°С†РёСЏ СЃРёРјРјРµС‚СЂРёС‡РЅРѕР№ РјР°С‚СЂРёС†С‹ СЃС‚РѕРёРјРѕСЃС‚РµР№ РјР°СЂС€СЂСѓС‚РѕРІ
 void generateCostMatrix(int** graph, int n, int maxCost) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
@@ -16,14 +16,14 @@ void generateCostMatrix(int** graph, int n, int maxCost) {
                 graph[i][j] = 0;
             }
             else if (i < j) {
-                graph[i][j] = rand() % maxCost + 1; // Случайная стоимость от 1 до maxCost
+                graph[i][j] = rand() % maxCost + 1;
                 graph[j][i] = graph[i][j];
             }
         }
     }
 }
 
-// Вывод матрицы
+// Р’С‹РІРѕРґ РјР°С‚СЂРёС†С‹
 void printMatrix(int** graph, int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
@@ -33,27 +33,53 @@ void printMatrix(int** graph, int n) {
     }
 }
 
-// Вычисление стоимости пути (точный метод)
-int exactTSP(int** graph, bool* path, int pos, int n, int startCity, int count = 1, int cost = 0) {
-    if (count == n && graph[pos][startCity]) {
-        return cost + graph[pos][startCity];
+// РџРµС‡Р°С‚СЊ РїСѓС‚Рё 
+void printPath(int* path, int n) {
+    for (int i = 0; i <= n; i++) {
+        cout << path[i] + 1;
+        if (i < n) cout << ", ";
     }
-    int answer = INT_MAX;
-
-    for (int i = 0; i < n; i++) {
-        if (graph[pos][i] && !(path[i])) {
-            path[i] = true;
-            answer = min(answer, exactTSP(graph, path, i, n, startCity, count + 1, cost + graph[pos][i]));
-            path[i] = false;
-        }
-    }
-    return answer;
+    cout << endl;
 }
 
-// Вычисление стоимости пути (Жадный алгоритм)
-int greedyTSP(int** graph, int start, int n) {
+// РіР»РѕР±Р°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РїСѓС‚РµР№
+int bestCost = INT_MAX;
+int worstCost = 0;
+int* bestPath = nullptr;
+int* worstPath = nullptr;
+
+// С‚РѕС‡РЅС‹Р№ РјРµС‚РѕРґ
+void exactTSP(int** graph, bool* visited, int* currPath, int pos, int n, int startCity, int count, int cost) {
+    if (count == n) {
+        cost += graph[pos][startCity]; // РІРѕР·РІСЂР°С‚ РІ РЅР°С‡Р°Р»Рѕ
+        currPath[count] = startCity;   // СЃРѕС…СЂР°РЅРёС‚СЊ РІРѕР·РІСЂР°С‚ РІ РїСѓС‚СЊ
+
+        if (cost < bestCost) {
+            bestCost = cost;
+            for (int i = 0; i <= n; i++) bestPath[i] = currPath[i];
+        }
+        if (cost > worstCost) {
+            worstCost = cost;
+            for (int i = 0; i <= n; i++) worstPath[i] = currPath[i];
+        }
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            visited[i] = true;
+            currPath[count] = i;
+            exactTSP(graph, visited, currPath, i, n, startCity, count + 1, cost + graph[pos][i]);
+            visited[i] = false;
+        }
+    }
+}
+
+// Р–Р°РґРЅС‹Р№ Р°Р»РіРѕСЂРёС‚Рј
+int greedyTSP(int** graph, int start, int n, int* greedyPath) {
     bool* path = new bool[n]();
     path[start] = true;
+    greedyPath[0] = start;
     int totalCost = 0;
     int currentCity = start;
 
@@ -70,11 +96,12 @@ int greedyTSP(int** graph, int start, int n) {
 
         totalCost += minCost;
         path[nextCity] = true;
+        greedyPath[i] = nextCity;
         currentCity = nextCity;
     }
 
-    totalCost += graph[currentCity][start];
-
+    totalCost += graph[currentCity][start]; // РІРѕР·РІСЂР°С‚
+    greedyPath[n] = start;                  // СЃРѕС…СЂР°РЅРёС‚СЊ РІРѕР·РІСЂР°С‚ РІ РїСѓС‚СЊ
     delete[] path;
     return totalCost;
 }
@@ -87,24 +114,10 @@ int main() {
     char choice;
 
     do {
-        cout << "Enter the number of cities (3-15 recommended): ";
+        cout << "Enter the number of cities: ";
         cin >> N;
 
-        if (N < 3) {
-            cout << "Number of cities must be at least 3!" << endl;
-            continue;
-        }
-
-        if (N > 15) {
-            cout << "Warning: for N > 15 the exact method may take very long time!" << endl;
-            cout << "Do you want to continue? (y/n): ";
-            cin >> choice;
-            if (choice != 'y' && choice != 'Y') {
-                continue;
-            }
-        }
-
-        // Создание матрицы стоимостей
+        // РЎРѕР·РґР°РЅРёРµ РјР°С‚СЂРёС†С‹ СЃС‚РѕРёРјРѕСЃС‚РµР№
         int** graph = new int* [N];
         for (int i = 0; i < N; i++) {
             graph[i] = new int[N];
@@ -115,37 +128,60 @@ int main() {
         cout << "\nGenerated cost matrix for " << N << " cities:\n";
         printMatrix(graph, N);
 
-        // Случайный стартовый город
         int startCity = rand() % N;
-        cout << "The starting city: " << startCity << endl;
+        cout << "The starting city: " << startCity + 1 << endl;
 
-        // Массив посещённых городов
-        bool* path = new bool[N]();
-        path[startCity] = true;
+        // РњР°СЃСЃРёРІС‹ РґР»СЏ С‚РѕС‡РЅРѕРіРѕ РјРµС‚РѕРґР°
+        bool* visited = new bool[N]();
+        int* currPath = new int[N + 1];
+        bestPath = new int[N + 1];
+        worstPath = new int[N + 1];
+
+        visited[startCity] = true;
+        currPath[0] = startCity;
 
         cout << "\n   Exact method   " << endl;
         clock_t startTimeExact = clock();
-        int exactAnswer = exactTSP(graph, path, startCity, N, startCity);
+        exactTSP(graph, visited, currPath, startCity, N, startCity, 1, 0);
         clock_t endTimeExact = clock();
         double timeTakenExact = double(endTimeExact - startTimeExact) / CLOCKS_PER_SEC;
 
-        cout << "Minimum cost: " << exactAnswer << endl;
+        cout << "Best cost: " << bestCost << endl;
+        cout << "Best path: ";
+        printPath(bestPath, N);
+
+        cout << "Worst cost: " << worstCost << endl;
+        cout << "Worst path: ";
+        printPath(worstPath, N);
+
         cout << "Time taken: " << timeTakenExact << " seconds" << endl;
 
+        // Р–Р°РґРЅС‹Р№ Р°Р»РіРѕСЂРёС‚Рј
+        int* greedyPathArr = new int[N + 1];
         cout << "\n   Greedy method   " << endl;
         clock_t startTimeGreedy = clock();
-        int greedyAnswer = greedyTSP(graph, startCity, N);
+        int greedyAnswer = greedyTSP(graph, startCity, N, greedyPathArr);
         clock_t endTimeGreedy = clock();
         double timeTakenGreedy = double(endTimeGreedy - startTimeGreedy) / CLOCKS_PER_SEC;
 
-        cout << "Minimum cost: " << greedyAnswer << endl;
+        cout << "Greedy cost: " << greedyAnswer << endl;
+        cout << "Greedy path: ";
+        printPath(greedyPathArr, N);
         cout << "Time taken: " << timeTakenGreedy << " seconds" << endl;
 
-        delete[] path;
+        delete[] visited;
+        delete[] currPath;
+        delete[] bestPath;
+        delete[] worstPath;
+        delete[] greedyPathArr;
+
         for (int i = 0; i < N; i++) {
             delete[] graph[i];
         }
         delete[] graph;
+
+        bestCost = INT_MAX;
+        worstCost = 0;
 
         cout << "\nDo you want to try with another number of cities? (y/n): ";
         cin >> choice;
