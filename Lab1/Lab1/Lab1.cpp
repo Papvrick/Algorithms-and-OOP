@@ -42,7 +42,7 @@ void printPath(int* path, int n) {
 }
 
 // Алгоритм Дейкстры
-bool nextPermutation(int* P, int n) {
+bool Permutation(int* P, int n) {
     int i = n - 2;
     while (i >= 0 && P[i] >= P[i + 1]) {
         i--;
@@ -138,7 +138,7 @@ void bestOrWorstWay(int** graph, int N, int startCity, int& bestCost, int& worst
             worstPath[N] = startCity;
         }
 
-    } while (nextPermutation(perm, N - 1));
+    } while (Permutation(perm, N - 1));
 
     delete[] perm;
 }
