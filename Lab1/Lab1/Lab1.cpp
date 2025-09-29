@@ -47,19 +47,17 @@ bool Permutation(int* P, int n) {
     while (i >= 0 && P[i] >= P[i + 1]) {
         i--;
     }
-    if (i < 0) return false; // перестановок больше нет
+    if (i < 0) return false; 
 
     int j = n - 1;
     while (P[j] <= P[i]) {
         j--;
     }
 
-    // меняем местами
     int temp = P[i];
     P[i] = P[j];
     P[j] = temp;
 
-    // инвертирование хвоста
     int l = i + 1, r = n - 1;
     while (l < r) {
         int tmp = P[l];
