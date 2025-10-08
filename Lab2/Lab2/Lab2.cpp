@@ -1,11 +1,11 @@
-#include <string>
+п»ї#include <string>
 #include <vector>
 #include <iostream>
 
 using namespace std;
 
 
-//Функция получения первого вхождения подстроки в тексте
+//Р¤СѓРЅРєС†РёСЏ РїРѕР»СѓС‡РµРЅРёСЏ РїРµСЂРІРѕРіРѕ РІС…РѕР¶РґРµРЅРёСЏ РїРѕРґСЃС‚СЂРѕРєРё РІ С‚РµРєСЃС‚Рµ
 int findFirstInd(const string& s, const string& p) {
     int n = s.size();
     int m = p.size();
@@ -35,7 +35,7 @@ int findFirstInd(const string& s, const string& p) {
     else return -1;
 }
 
-//Функция получения индексов всех вхождений подстроки в тексте
+//Р¤СѓРЅРєС†РёСЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅРґРµРєСЃРѕРІ РІСЃРµС… РІС…РѕР¶РґРµРЅРёР№ РїРѕРґСЃС‚СЂРѕРєРё РІ С‚РµРєСЃС‚Рµ
 vector<int> findAllInd(const string& s, const string& p)
 {
     vector<int> results;
@@ -49,13 +49,13 @@ vector<int> findAllInd(const string& s, const string& p)
 
     int i = m - 1, j;
     int k;
-    while (i < n) // не конец строки
+    while (i < n) // РЅРµ РєРѕРЅРµС† СЃС‚СЂРѕРєРё
     {
         k = i;
         j = m - 1;
-        while (j >= 0) // j бежит с конца паттерна
+        while (j >= 0) // j Р±РµР¶РёС‚ СЃ РєРѕРЅС†Р° РїР°С‚С‚РµСЂРЅР°
         {
-            if (s[k] == p[j]) // есть совпадение
+            if (s[k] == p[j]) // РµСЃС‚СЊ СЃРѕРІРїР°РґРµРЅРёРµ
             {
                 j--;
                 k--;
@@ -66,16 +66,16 @@ vector<int> findAllInd(const string& s, const string& p)
                 break;
             }
         }
-        if (j < 0) // вхождение найдено
+        if (j < 0) // РІС…РѕР¶РґРµРЅРёРµ РЅР°Р№РґРµРЅРѕ
         {
             results.push_back(i - m + 1);
-            i++; // сдвиг на 1 для поиска следующего вхождения
+            i++; // СЃРґРІРёРі РЅР° 1 РґР»СЏ РїРѕРёСЃРєР° СЃР»РµРґСѓСЋС‰РµРіРѕ РІС…РѕР¶РґРµРЅРёСЏ
         }
     }
     return results;
 }
 
-//Функция получения индексов вхождений подстроки в тексте в заданном диапазоне
+//Р¤СѓРЅРєС†РёСЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅРґРµРєСЃРѕРІ РІС…РѕР¶РґРµРЅРёР№ РїРѕРґСЃС‚СЂРѕРєРё РІ С‚РµРєСЃС‚Рµ РІ Р·Р°РґР°РЅРЅРѕРј РґРёР°РїР°Р·РѕРЅРµ
 vector<int> findAllInRangeInd(const string& s, const string& p, int start, int end)
 {
     vector<int> results;
@@ -84,10 +84,10 @@ vector<int> findAllInRangeInd(const string& s, const string& p, int start, int e
         return results;
     }
 
-    int n = end - start + 1; // длина диапазона
+    int n = end - start + 1; // РґР»РёРЅР° РґРёР°РїР°Р·РѕРЅР°
     int m = p.size();
 
-    if (m > n)     // паттерн больше диапазона
+    if (m > n)     // РїР°С‚С‚РµСЂРЅ Р±РѕР»СЊС€Рµ РґРёР°РїР°Р·РѕРЅР°
     {
         return results;
     }
@@ -96,9 +96,9 @@ vector<int> findAllInRangeInd(const string& s, const string& p, int start, int e
     for (int i = 0; i < 256; i++) TAB[i] = m;
     for (int i = 0; i < m - 1; i++) TAB[p[i]] = m - 1 - i;
 
-    int i = start + m - 1, j = m - 1; // i - граница начала
+    int i = start + m - 1, j = m - 1; // i - РіСЂР°РЅРёС†Р° РЅР°С‡Р°Р»Р°
     int k;
-    while (i < end) // граница конца
+    while (i < end) // РіСЂР°РЅРёС†Р° РєРѕРЅС†Р°
     {
         k = i;
         j = m - 1;
