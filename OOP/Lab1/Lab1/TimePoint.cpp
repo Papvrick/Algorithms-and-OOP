@@ -41,7 +41,7 @@ TimePoint::TimePoint(int h, int m, int s) {
 
 // 2) Ввод/вывод
 void TimePoint::input() {
-    cout << "Enter hours, minutes, seconds: ";
+
     cin >> hours >> minutes >> seconds;
     normalize();
 }
