@@ -173,7 +173,7 @@ int main()
         cout << "Pattern wasn't found in the text";
         return 0;
     }
-    else cout << "Patter was found in the text, the index of the first occurrence: " << first << endl;
+    else cout << "Pattern was found in the text, the index of the first occurrence: " << first << endl;
 
     if (second.size() < 2) cout << "Pattern appears in the text once" << endl;
     else {
