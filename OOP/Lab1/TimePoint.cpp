@@ -30,7 +30,7 @@ void TimePoint::normalize()
     else if (hours < 0) hours = (hours % 24 + 24) % 24;
 }
 
-// 1) Êîíñòðóêòîðû
+// 1) ÐšÐ¾Ð½ÑÑ‚Ñ€ÑƒÐºÑ‚Ð¾Ñ€Ñ‹
 TimePoint::TimePoint() : hours(0), minutes(0), seconds(0) {}
 
 TimePoint::TimePoint(int h, int m, int s) {
@@ -39,7 +39,7 @@ TimePoint::TimePoint(int h, int m, int s) {
     if (s >= 0 && s < 60) seconds = s; else seconds = 0;
 }
 
-// 2) Ââîä/âûâîä
+// 2) Ð’Ð²Ð¾Ð´/Ð²Ñ‹Ð²Ð¾Ð´
 void TimePoint::input() {
     cout << "Enter hours, minutes, seconds: ";
     cin >> hours >> minutes >> seconds;
@@ -52,18 +52,18 @@ void TimePoint::output() const {
         << setw(2) << seconds;
 }
 
-// 3) Àêñåññîðû
-// Ãåòòåðû
+// 3) ÐÐºÑÐµÑÑÐ¾Ñ€Ñ‹
+// Ð“ÐµÑ‚Ñ‚ÐµÑ€Ñ‹
 int TimePoint::getHours() const { return hours; }
 int TimePoint::getMinutes() const { return minutes; }
 int TimePoint::getSeconds() const { return seconds; }
 
-// Ñåòòåðû
+// Ð¡ÐµÑ‚Ñ‚ÐµÑ€Ñ‹
 void TimePoint::setHours(int h) { hours = h; normalize(); }
 void TimePoint::setMinutes(int m) { minutes = m; normalize(); }
 void TimePoint::setSeconds(int s) { seconds = s; normalize(); }
 
-// 4) Ñóììà âðåìåííûõ òî÷åê
+// 4) Ð¡ÑƒÐ¼Ð¼Ð° Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ñ… Ñ‚Ð¾Ñ‡ÐµÐº
 TimePoint TimePoint::operator+(const TimePoint& other) const {
     TimePoint result(hours + other.hours,
         minutes + other.minutes,
@@ -72,7 +72,7 @@ TimePoint TimePoint::operator+(const TimePoint& other) const {
     return result;
 }
 
-// 5) Ðàçíîñòü âðåìåííûõ òî÷åê
+// 5) Ð Ð°Ð·Ð½Ð¾ÑÑ‚ÑŒ Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ñ… Ñ‚Ð¾Ñ‡ÐµÐº
 TimePoint TimePoint::operator-(const TimePoint& other) const {
     TimePoint result(hours - other.hours,
         minutes - other.minutes,
@@ -81,7 +81,7 @@ TimePoint TimePoint::operator-(const TimePoint& other) const {
     return result;
 }
 
-// 6) Ñðàâíåíèÿ äâóõ âðåìåííûõ òî÷åê
+// 6) Ð¡Ñ€Ð°Ð²Ð½ÐµÐ½Ð¸Ñ Ð´Ð²ÑƒÑ… Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ñ… Ñ‚Ð¾Ñ‡ÐµÐº
 bool TimePoint::operator==(const TimePoint& other) const {
     return hours == other.hours && minutes == other.minutes && seconds == other.seconds;
 }
@@ -108,7 +108,7 @@ bool TimePoint::operator>=(const TimePoint& other) const {
     return !(*this < other);
 }
 
-// 7) Âðåìÿ ñóòîê 
+// 7) Ð’Ñ€ÐµÐ¼Ñ ÑÑƒÑ‚Ð¾Ðº 
 string TimePoint::timeOfDay() const {
     if (hours >= 6 && hours < 12) {
         return "Morning";
@@ -124,7 +124,7 @@ string TimePoint::timeOfDay() const {
     }
 }
 
-// 8) Âðåìÿ äî áóäèëüíèêà
+// 8) Ð’Ñ€ÐµÐ¼Ñ Ð´Ð¾ Ð±ÑƒÐ´Ð¸Ð»ÑŒÐ½Ð¸ÐºÐ°
 TimePoint TimePoint::timeUntil(const TimePoint& alarm) const {
     int total1 = hours * 3600 + minutes * 60 + seconds;
     int total2 = alarm.hours * 3600 + alarm.minutes * 60 + alarm.seconds;
@@ -139,7 +139,7 @@ TimePoint TimePoint::timeUntil(const TimePoint& alarm) const {
     return TimePoint(h, m, s);
 }
 
-// 9) Ïðîâåðêà ñðàáîòàåò ëè áóäèëüíèê ñåãîäíÿ
+// 9) ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° ÑÑ€Ð°Ð±Ð¾Ñ‚Ð°ÐµÑ‚ Ð»Ð¸ Ð±ÑƒÐ´Ð¸Ð»ÑŒÐ½Ð¸Ðº ÑÐµÐ³Ð¾Ð´Ð½Ñ
 bool TimePoint::willAlarmRingToday(const TimePoint& alarm) const {
-    return *this <= alarm; // Åñëè òåêóùåå âðåìÿ <= âðåìåíè áóäèëüíèêà, òî ñðàáîòàåò ñåãîäíÿ
+    return *this <= alarm; // Ð•ÑÐ»Ð¸ Ñ‚ÐµÐºÑƒÑ‰ÐµÐµ Ð²Ñ€ÐµÐ¼Ñ <= Ð²Ñ€ÐµÐ¼ÐµÐ½Ð¸ Ð±ÑƒÐ´Ð¸Ð»ÑŒÐ½Ð¸ÐºÐ°, Ñ‚Ð¾ ÑÑ€Ð°Ð±Ð¾Ñ‚Ð°ÐµÑ‚ ÑÐµÐ³Ð¾Ð´Ð½Ñ
 }

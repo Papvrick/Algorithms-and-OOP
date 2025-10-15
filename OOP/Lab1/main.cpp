@@ -4,13 +4,13 @@ using namespace std;
 
 int main() {
 
-    // 1) Создание объектов
+    // 1) РЎРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚РѕРІ
     TimePoint now(10, 30, 0);
     cout << "Current time: ";
     now.output();
-    cout << " — " << now.timeOfDay() << endl; // определение времени суток(7)
+    cout << " вЂ” " << now.timeOfDay() << endl; // РѕРїСЂРµРґРµР»РµРЅРёРµ РІСЂРµРјРµРЅРё СЃСѓС‚РѕРє(7)
 
-    // 2) Ввод времени
+    // 2) Р’РІРѕРґ РІСЂРµРјРµРЅРё
     cout << "\nEnter the alarm time:\n";
     TimePoint alarm;
     alarm.input();
@@ -19,13 +19,13 @@ int main() {
     alarm.output();
     cout << endl;
 
-    // 8) Время до будильника
+    // 8) Р’СЂРµРјСЏ РґРѕ Р±СѓРґРёР»СЊРЅРёРєР°
     TimePoint left = now.timeUntil(alarm);
     cout << "Time until alarm: ";
     left.output();
     cout << endl;
 
-    // 9) Проверка сработает ли будильник сегодня
+    // 9) РџСЂРѕРІРµСЂРєР° СЃСЂР°Р±РѕС‚Р°РµС‚ Р»Рё Р±СѓРґРёР»СЊРЅРёРє СЃРµРіРѕРґРЅСЏ
     if (now.willAlarmRingToday(alarm)) {
         cout << "Alarm will ring today" << endl;
     }
@@ -33,13 +33,13 @@ int main() {
         cout << "Alarm will ring tomorrow" << endl;
     }
 
-    // 3) Тест аксессоров
+    // 3) РўРµСЃС‚ Р°РєСЃРµСЃСЃРѕСЂРѕРІ
     cout << "\nAccessors test:" << endl;
     cout << "Hours: " << now.getHours() << endl;
     cout << "Minutes: " << now.getMinutes() << endl;
     cout << "Seconds: " << now.getSeconds() << endl;
 
-    // Тест суммы/разности временных точек(4-5)
+    // РўРµСЃС‚ СЃСѓРјРјС‹/СЂР°Р·РЅРѕСЃС‚Рё РІСЂРµРјРµРЅРЅС‹С… С‚РѕС‡РµРє(4-5)
     cout << "\nAddition/subtraction test:" << endl;
     TimePoint t1(10, 30, 0);
     TimePoint t2(2, 45, 30);
@@ -48,7 +48,7 @@ int main() {
     cout << "t1 + t2 = "; sum.output(); cout << endl;
     cout << "t1 - t2 = "; diff.output(); cout << endl;
 
-    // Тест сравнений(6)
+    // РўРµСЃС‚ СЃСЂР°РІРЅРµРЅРёР№(6)
     cout << "\nComparison test:" << endl;
     cout << "t1 == t2: " << (t1 == t2) << endl;
     cout << "t1 < t2: " << (t1 < t2) << endl;

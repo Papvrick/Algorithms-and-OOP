@@ -8,35 +8,35 @@ private:
     int minutes;
     int seconds;
 
-    void normalize(); // вспомогательная функция
+    void normalize(); // РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏ
 
 public:
-    // 1) Конструкторы
+    // 1) РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂС‹
     TimePoint();
     TimePoint(int h, int m = 0, int s = 0);
 
-    // 2) Ввод / вывод
+    // 2) Р’РІРѕРґ / РІС‹РІРѕРґ
     void input();
     void output() const;
 
-    // 3) Аксессоры
-    // Геттеры
-    int getHours() const; // ЗАДАНИЕ 3
-    int getMinutes() const; // ЗАДАНИЕ 3
-    int getSeconds() const; // ЗАДАНИЕ 3
+    // 3) РђРєСЃРµСЃСЃРѕСЂС‹
+    // Р“РµС‚С‚РµСЂС‹
+    int getHours() const; // Р—РђР”РђРќРР• 3
+    int getMinutes() const; // Р—РђР”РђРќРР• 3
+    int getSeconds() const; // Р—РђР”РђРќРР• 3
 
-    // Сеттеры
-    void setHours(int h); // ЗАДАНИЕ 3
-    void setMinutes(int m); // ЗАДАНИЕ 3
-    void setSeconds(int s); // ЗАДАНИЕ 3
+    // РЎРµС‚С‚РµСЂС‹
+    void setHours(int h); // Р—РђР”РђРќРР• 3
+    void setMinutes(int m); // Р—РђР”РђРќРР• 3
+    void setSeconds(int s); // Р—РђР”РђРќРР• 3
 
-    // 4) Сумма временных точек
+    // 4) РЎСѓРјРјР° РІСЂРµРјРµРЅРЅС‹С… С‚РѕС‡РµРє
     TimePoint operator+(const TimePoint& other) const;
 
-    // 5) Разность временных точек
+    // 5) Р Р°Р·РЅРѕСЃС‚СЊ РІСЂРµРјРµРЅРЅС‹С… С‚РѕС‡РµРє
     TimePoint operator-(const TimePoint& other) const;
 
-    // 6) Сравнение двух временных точек
+    // 6) РЎСЂР°РІРЅРµРЅРёРµ РґРІСѓС… РІСЂРµРјРµРЅРЅС‹С… С‚РѕС‡РµРє
     bool operator==(const TimePoint& other) const;
     bool operator!=(const TimePoint& other) const;
     bool operator<(const TimePoint& other) const;
@@ -44,12 +44,12 @@ public:
     bool operator<=(const TimePoint& other) const;
     bool operator>=(const TimePoint& other) const;
 
-    // 7) Время суток
+    // 7) Р’СЂРµРјСЏ СЃСѓС‚РѕРє
     string timeOfDay() const;
 
-    // 8) Время до будильника
+    // 8) Р’СЂРµРјСЏ РґРѕ Р±СѓРґРёР»СЊРЅРёРєР°
     TimePoint timeUntil(const TimePoint& alarm) const;
 
-    // 9) Проверка сработает ли будильник сегодня
+    // 9) РџСЂРѕРІРµСЂРєР° СЃСЂР°Р±РѕС‚Р°РµС‚ Р»Рё Р±СѓРґРёР»СЊРЅРёРє СЃРµРіРѕРґРЅСЏ
     bool willAlarmRingToday(const TimePoint& alarm) const;
 };
