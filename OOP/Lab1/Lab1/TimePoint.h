@@ -21,14 +21,14 @@ public:
 
     // 3) Аксессоры
     // Геттеры
-    int getHours() const; // ЗАДАНИЕ 3
-    int getMinutes() const; // ЗАДАНИЕ 3
-    int getSeconds() const; // ЗАДАНИЕ 3
+    int getHours() const;
+    int getMinutes() const;
+    int getSeconds() const;
 
     // Сеттеры
-    void setHours(int h); // ЗАДАНИЕ 3
-    void setMinutes(int m); // ЗАДАНИЕ 3
-    void setSeconds(int s); // ЗАДАНИЕ 3
+    void setHours(int h);
+    void setMinutes(int m);
+    void setSeconds(int s);
 
     // 4) Сумма временных точек
     TimePoint operator+(const TimePoint& other) const;
