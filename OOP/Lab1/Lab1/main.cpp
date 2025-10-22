@@ -9,7 +9,7 @@ int main() {
     TimePoint anotherNow(10, 3, 0);
     cout << "Enter current time: ";
     cin >> now;
-    cout << "Current time: " << now << " — " << now.timeOfDay() << endl;
+    cout << "Current time: " << now << " - " << now.timeOfDay() << endl;
     cout << "Another time: " << anotherNow << " - " << anotherNow.timeOfDay() << endl;
 
     // 2) Ввод времени будильника с клавиатуры
@@ -42,15 +42,15 @@ int main() {
     testTime.setHours(14);
     testTime.setMinutes(30);
     testTime.setSeconds(20);
-    cout << "After changes: " << testTime << endl;
+    cout << "After changes: в" << testTime << endl;
 
     // 6) Тест суммы/разности временных точек с потоковым вводом
     cout << "\nTest of sum/difference of time points:" << endl;
     TimePoint t1, t2;
 
-    cout << "Enter first time point (hours minutes seconds): ";
+    cout << "Enter first time point: ";
     cin >> t1;
-    cout << "Enter second time point (hours minutes seconds): ";
+    cout << "Enter second time point: ";
     cin >> t2;
 
     cout << "t1 + t2 = " << (t1 + t2) << endl;
