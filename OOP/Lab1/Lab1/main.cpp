@@ -4,77 +4,64 @@ using namespace std;
 
 int main() {
 
-    // 1) Создание объектов
-    TimePoint anotherNow(10, 30, 0);
-    cout << "Parametr time: ";
-    anotherNow.output();
-    cout << " - " << anotherNow.timeOfDay() << endl;
-    cout << "Enter current time: ";
+    // 1) Ввод текущего времени с клавиатуры
     TimePoint now;
-    now.input();
+    TimePoint anotherNow(10, 3, 0);
+    cout << "Enter current time: ";
+    cin >> now;
+    cout << "Current time: " << now << " — " << now.timeOfDay() << endl;
+    cout << "Another time: " << anotherNow << " - " << anotherNow.timeOfDay() << endl;
 
-    cout << "Current time: ";
-    now.output();
-    cout << " - " << now.timeOfDay() << endl; // определение времени суток(7)
-
-    // 2) Ввод времени
-    cout << "\nEnter the alarm time:";
+    // 2) Ввод времени будильника с клавиатуры
+    cout << "\nEnter alarm time (hours minutes seconds): ";
     TimePoint alarm;
-    alarm.input();
+    cin >> alarm;
 
-    cout << "The alarm clock is set to: ";
-    alarm.output();
-    cout << endl;
+    cout << "Alarm set for: " << alarm << endl;
 
-    // 8) Время до будильника
+    // 3) Расчет времени до будильника
     TimePoint left = now.timeUntil(alarm);
-    cout << "Time until alarm: ";
-    left.output();
-    cout << endl;
+    cout << "Time until alarm: " << left << endl;
 
-    // 9) Проверка сработает ли будильник сегодня
+    // 4) Проверка, сработает ли будильник сегодня
     if (now.willAlarmRingToday(alarm)) {
-        cout << "Alarm will ring today" << endl;
+        cout << "Alarm will ring TODAY" << endl;
     }
     else {
-        cout << "Alarm will ring tomorrow" << endl;
+        cout << "Alarm will ring TOMORROW" << endl;
     }
 
-    // 3) Тест аксессоров
-    cout << "\nAccessors test:" << endl;
+    // 5) Тест аксессоров (Геттеры/Сеттеры)
+    TimePoint testTime(3, 18, 19);
+    cout << "Getters:" << endl;
     cout << "Hours: " << now.getHours() << endl;
     cout << "Minutes: " << now.getMinutes() << endl;
     cout << "Seconds: " << now.getSeconds() << endl;
 
-    // Тест суммы/разности временных точек(4-5)
-    cout << "Enter first time for addiction/subtraction:";
-    TimePoint t1;
-    t1.input();
+    cout << "Setters:" << endl;
+    testTime.setHours(14);
+    testTime.setMinutes(30);
+    testTime.setSeconds(20);
+    cout << "After changes: " << testTime << endl;
 
-    cout << "Enter second time for addiction/subtraction ";
-    TimePoint t2;
-    t2.input();
+    // 6) Тест суммы/разности временных точек с потоковым вводом
+    cout << "\nTest of sum/difference of time points:" << endl;
+    TimePoint t1, t2;
 
-    TimePoint sum = t1 + t2;
-    t1.output();
-    cout << " + ";
-    t2.output();
-    cout << " = ";
-    sum.output(); cout << endl;
+    cout << "Enter first time point (hours minutes seconds): ";
+    cin >> t1;
+    cout << "Enter second time point (hours minutes seconds): ";
+    cin >> t2;
 
-    TimePoint diff = t1 - t2;
-    t1.output();
-    cout << " - ";
-    t2.output();
-    cout << " = ";
-    diff.output(); cout << endl;
+    cout << "t1 + t2 = " << (t1 + t2) << endl;
+    cout << "t1 - t2 = " << (t1 - t2) << endl;
 
-    // Тест сравнений временных точек(6)
+    // 7) Тест операций сравнения
     cout << "\nComparison test:" << endl;
     cout << "t1 == t2: " << (t1 == t2) << endl;
+    cout << "t1 != t2: " << (t1 != t2) << endl;
     cout << "t1 < t2: " << (t1 < t2) << endl;
     cout << "t1 > t2: " << (t1 > t2) << endl;
-    cout << "t1 != t2: " << (t1 != t2) << endl;
 
     return 0;
 }

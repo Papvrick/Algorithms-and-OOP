@@ -39,17 +39,27 @@ TimePoint::TimePoint(int h, int m, int s) {
     if (s >= 0 && s < 60) seconds = s; else seconds = 0;
 }
 
-// 2) Ввод/вывод
-void TimePoint::input() {
+// 2) Потоковые Ввод/Вывод
+istream& operator >> (istream& inputStream, TimePoint& input)
+{
+    int hours, minutes, seconds;
 
-    cin >> hours >> minutes >> seconds;
-    normalize();
+    inputStream >> hours >> minutes >> seconds;
+
+    input.setHours(hours);
+    input.setMinutes(minutes);
+    input.setSeconds(seconds);
+
+    return inputStream;
 }
 
-void TimePoint::output() const {
-    cout << setfill('0') << setw(2) << hours << ":"
-        << setw(2) << minutes << ":"
-        << setw(2) << seconds;
+ostream& operator << (ostream& outputStream, const TimePoint& output)
+{
+    outputStream << setfill('0') << setw(2) << output.getHours() << ":"
+        << setw(2) << output.getMinutes() << ":"
+        << setw(2) << output.getSeconds();
+
+    return outputStream;
 }
 
 // 3) Аксессоры

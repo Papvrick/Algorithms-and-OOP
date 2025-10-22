@@ -15,9 +15,9 @@ public:
     TimePoint();
     TimePoint(int h, int m = 0, int s = 0);
 
-    // 2) Ввод / вывод
-    void input();
-    void output() const;
+    // 2) Потоковый Ввод/Вывод
+    friend istream& operator >> (istream& inputStream, TimePoint& input);
+    friend ostream& operator << (ostream& outputStream, const TimePoint& output);
 
     // 3) Аксессоры
     // Геттеры
