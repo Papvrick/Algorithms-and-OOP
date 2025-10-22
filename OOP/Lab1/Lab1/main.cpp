@@ -5,6 +5,10 @@ using namespace std;
 int main() {
 
     // 1) Создание объектов
+    TimePoint anotherNow(10, 30, 0);
+    cout << "Parametr time: ";
+    anotherNow.output();
+    cout << " - " << anotherNow.timeOfDay() << endl;
     cout << "Enter current time: ";
     TimePoint now;
     now.input();
