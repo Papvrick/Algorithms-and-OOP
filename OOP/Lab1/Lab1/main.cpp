@@ -60,7 +60,7 @@ int main() {
 
     TimePoint diff = t1 - t2;
     t1.output();
-    cout << " + ";
+    cout << " - ";
     t2.output();
     cout << " = ";
     diff.output(); cout << endl;
