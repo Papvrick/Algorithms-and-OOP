@@ -7,19 +7,19 @@
 
 using namespace std;
 
-// Просеивание вниз 
+// РџСЂРѕСЃРµРёРІР°РЅРёРµ РІРЅРёР· 
 void siftDown(vector<int>& x, int start, int end) {
     int root = start;
-    while (2 * root + 1 <= end) {  // Пока есть хотя бы левый потомок
+    while (2 * root + 1 <= end) {  // РџРѕРєР° РµСЃС‚СЊ С…РѕС‚СЏ Р±С‹ Р»РµРІС‹Р№ РїРѕС‚РѕРјРѕРє
         int left = 2 * root + 1;
         int right = 2 * root + 2;
-        int swapInd = root;        // Начинаем обменивать с корня
+        int swapInd = root;        // РќР°С‡РёРЅР°РµРј РѕР±РјРµРЅРёРІР°С‚СЊ СЃ РєРѕСЂРЅСЏ
 
-        // Сравниваем с левым потомком
+        // РЎСЂР°РІРЅРёРІР°РµРј СЃ Р»РµРІС‹Рј РїРѕС‚РѕРјРєРѕРј
         if (x[swapInd] < x[left])
             swapInd = left;
 
-        // Сравниваем с правым потомком (если он существует)
+        // РЎСЂР°РІРЅРёРІР°РµРј СЃ РїСЂР°РІС‹Рј РїРѕС‚РѕРјРєРѕРј (РµСЃР»Рё РѕРЅ СЃСѓС‰РµСЃС‚РІСѓРµС‚)
         if (right <= end && x[swapInd] < x[right])
             swapInd = right;
 
@@ -32,26 +32,26 @@ void siftDown(vector<int>& x, int start, int end) {
 }
 
 
-// 1) Построение пирамиды
+// 1) РџРѕСЃС‚СЂРѕРµРЅРёРµ РїРёСЂР°РјРёРґС‹
 void buildPyramid(vector<int>& x) {
     int n = x.size();
-    // Просеивание половины массива
+    // РџСЂРѕСЃРµРёРІР°РЅРёРµ РїРѕР»РѕРІРёРЅС‹ РјР°СЃСЃРёРІР°
     for (int i = n / 2 - 1; i >= 0; i--) {
         siftDown(x, i, n - 1);
     }
 }
 
-// 2) Сортировка 
+// 2) РЎРѕСЂС‚РёСЂРѕРІРєР° 
 void pyramidSort(vector<int>& x) {
     int n = x.size();
     buildPyramid(x);
-    for (int k = n - 1; k > 0; k--) {        // k - индекс последнего элемента в еще не отсортированной части массива 
+    for (int k = n - 1; k > 0; k--) {        // k - РёРЅРґРµРєСЃ РїРѕСЃР»РµРґРЅРµРіРѕ СЌР»РµРјРµРЅС‚Р° РІ РµС‰Рµ РЅРµ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅРѕР№ С‡Р°СЃС‚Рё РјР°СЃСЃРёРІР° 
         swap(x[0], x[k]);
         siftDown(x, 0, k - 1);
     }
 }
 
-// Проверка на упорядоченность 
+// РџСЂРѕРІРµСЂРєР° РЅР° СѓРїРѕСЂСЏРґРѕС‡РµРЅРЅРѕСЃС‚СЊ 
 bool isSorted(const vector<int>& arr) {
     for (size_t i = 1; i < arr.size(); i++)
         if (arr[i - 1] > arr[i])
@@ -66,9 +66,9 @@ int main()
 
         vector<int> x;
         int rangeStart, rangeEnd, numValues;
-        cout << "Введите диапазон случайных чисел (начало и конец): ";
+        cout << "Р’РІРµРґРёС‚Рµ РґРёР°РїР°Р·РѕРЅ СЃР»СѓС‡Р°Р№РЅС‹С… С‡РёСЃРµР» (РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС†): ";
         cin >> rangeStart >> rangeEnd;
-        cout << "Введите размер массива(10000 || 100000 || 1000000): ";
+        cout << "Р’РІРµРґРёС‚Рµ СЂР°Р·РјРµСЂ РјР°СЃСЃРёРІР°(10000 || 100000 || 1000000): ";
         cin >> numValues;
 
         random_device rd;
@@ -81,15 +81,15 @@ int main()
         }
 
 #if 0
-        // Вывод исходного массива
-        cout << "\nСгенерированный массив:\n";
+        // Р’С‹РІРѕРґ РёСЃС…РѕРґРЅРѕРіРѕ РјР°СЃСЃРёРІР°
+        cout << "\nРЎРіРµРЅРµСЂРёСЂРѕРІР°РЅРЅС‹Р№ РјР°СЃСЃРёРІ:\n";
         for (int i = 0; i < x.size(); i++) {
             cout << x[i] << " ";
         }
         cout << "\n";
 
 #endif
-        // Замер времени и сортировка
+        // Р—Р°РјРµСЂ РІСЂРµРјРµРЅРё Рё СЃРѕСЂС‚РёСЂРѕРІРєР°
         chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
 
         pyramidSort(x);
@@ -97,11 +97,11 @@ int main()
         chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
 
         chrono::duration<double> duration = end - start;
-        cout << "\nВремя сортировки: " << duration.count() << " секунд";
+        cout << "\nР’СЂРµРјСЏ СЃРѕСЂС‚РёСЂРѕРІРєРё: " << duration.count() << " СЃРµРєСѓРЅРґ";
 
 #if 0
-        // Вывод отсортированного массива
-        cout << "\nОтсортированный массив:\n";
+        // Р’С‹РІРѕРґ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅРѕРіРѕ РјР°СЃСЃРёРІР°
+        cout << "\nРћС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Р№ РјР°СЃСЃРёРІ:\n";
         for (int i = 0; i < x.size(); i++) {
             cout << x[i] << " ";
         }
@@ -110,15 +110,15 @@ int main()
         cout << "\n";
 
 
-        cout << "Отсортирован ли массив? ";
+        cout << "РћС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅ Р»Рё РјР°СЃСЃРёРІ? ";
         if (isSorted(x))
-            cout << "Да";
+            cout << "Р”Р°";
         else
-            cout << "Нет";
+            cout << "РќРµС‚";
         cout << endl;
 
         char choice;
-        cout << "\nПродолжить? (y/n): ";
+        cout << "\nРџСЂРѕРґРѕР»Р¶РёС‚СЊ? (y/n): ";
         cin >> choice;
 
         if (choice != 'y' && choice != 'Y') {
