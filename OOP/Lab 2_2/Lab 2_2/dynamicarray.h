@@ -9,14 +9,20 @@ class DynamicArray
 {
 public:
 
-    DynamicArray();
-    DynamicArray(const ItemType* arr, int initialLength);
-    DynamicArray(const DynamicArray&);
-    DynamicArray(DynamicArray&&);
-    ~DynamicArray();
+    DynamicArray(); // Конструктор по умолчанию
+    DynamicArray(const ItemType* arr, int initialLength); // Конструктор из обычного массива
+    DynamicArray(const DynamicArray&); // Конструктор копирования
+    DynamicArray(DynamicArray&&); // Конструктор перемещения
+    ~DynamicArray(); // Деструктор
 
-    DynamicArray& operator=(const DynamicArray&);
-    DynamicArray& operator=(DynamicArray&&);
+    DynamicArray& operator=(const DynamicArray&); // Присваивание копированием
+    DynamicArray& operator=(DynamicArray&&); // Присваивание перемещением
+    
+    // Итераторы
+    ItemType* begin() { return arrayData_; }                                    
+    const ItemType* begin() const { return arrayData_; }                        
+    ItemType* end() { return arrayData_ + arrayLength_; }                       
+    const ItemType* end() const { return arrayData_ + arrayLength_; }           
 
     // Две версии индексирования
     ItemType& operator[](const int index)
@@ -31,13 +37,26 @@ public:
         return arrayData_[index];
     }
 
+    // Вставка по индексу
     bool insertAt(const int, const ItemType&);
 
+    // Добавление в конец
     void add(const ItemType&);
 
+    // Получение размера
     int getLength() const { return arrayLength_; }
 
+    // Получение указателя на данные
     ItemType* getData() const { return arrayData_; }
+
+    // Вставка перед итератором
+    bool insertBefore(ItemType* iterator, const ItemType& value);
+
+    // Удаление по итератору
+    bool removeAtIterator(ItemType* iterator);
+
+    // Удаление диапазаона по итераторам
+    bool removeRange(ItemType* first, ItemType* last);
 
     // Удаление элемента по индексу. Если индекс некорректный, вернуть false
     bool removeAt(const int index);
@@ -53,6 +72,9 @@ public:
 
     // Сортировка элементов массива по возрастанию (Пузырьком)
     void sort();
+    
+    // Сортировка элементов массива по убыванию (Пузырьком)
+    void sort2();
 
     // Поиск максимального элемента
     ItemType getMax() const;
@@ -128,12 +150,9 @@ private:
 template<typename ItemType>
 DynamicArray<ItemType>::DynamicArray(const ItemType* arr, int initialLength)
 {
-    std::cout << "DynamicArray::DynamicArray(const ItemType*, int) " << std::endl;
-
     if (!arr || initialLength <= 0) {
         arrayData_ = nullptr;
-        arrayLength_ = 0;
-        std::cout << "Создан пустой массив" << std::endl;
+        arrayLength_ = 0; // Создан пустой массив
         return;
     }
 
@@ -146,18 +165,15 @@ DynamicArray<ItemType>::DynamicArray(const ItemType* arr, int initialLength)
     }
 }
 
-
+// Конструктор по умолчанию
 template<typename ItemType>
 DynamicArray<ItemType>::DynamicArray() : arrayData_(nullptr), arrayLength_(0)
-{
-    std::cout << "DynamicArray::DynamicArray()" << std::endl;
-}
+{}
 
+// Конструктор копирования
 template<typename ItemType>
 DynamicArray<ItemType>::DynamicArray(const DynamicArray<ItemType>& otherArray)
 {
-    std::cout << "DynamicArray::DynamicArray(const DynamicArray&)" << std::endl;
-
     if (otherArray.arrayLength_ == 0)
     {
         arrayData_ = nullptr;
@@ -174,33 +190,30 @@ DynamicArray<ItemType>::DynamicArray(const DynamicArray<ItemType>& otherArray)
     }
 }
 
+// Конструктор перемещения
 template<typename ItemType>
 DynamicArray<ItemType>::DynamicArray(DynamicArray<ItemType>&& otherArray)
 {
-    std::cout << "DynamicArray::DynamicArray(DynamicArray&&)" << std::endl;
-
     arrayData_ = otherArray.arrayData_;
     arrayLength_ = otherArray.arrayLength_;
     otherArray.arrayData_ = nullptr;
     otherArray.arrayLength_ = 0;
 }
 
+// Деструктор
 template<typename ItemType>
 DynamicArray<ItemType>::~DynamicArray()
 {
-    std::cout << "DynamicArray::~DynamicArray()" << std::endl;
-
     delete[] arrayData_;
 }
 
+// Оператор присваивания копированием
 template<typename ItemType>
 DynamicArray<ItemType>& DynamicArray<ItemType>::operator=(const DynamicArray<ItemType>& otherArray)
 {
-    std::cout << "DynamicArray::operator=(const DynamicArray&)" << std::endl;
-
-    if (this != &otherArray)
+    if (this != &otherArray) // Защита от самоприсваивания
     {
-        delete[] arrayData_;
+        delete[] arrayData_; // Освобождение старой памяти
 
         if (otherArray.arrayLength_ == 0)
         {
@@ -212,7 +225,7 @@ DynamicArray<ItemType>& DynamicArray<ItemType>::operator=(const DynamicArray<Ite
             arrayLength_ = otherArray.arrayLength_;
             arrayData_ = new ItemType[arrayLength_];
 
-            for (int index = 0; index < arrayLength_; ++index)
+            for (int index = 0; index < arrayLength_; ++index) // Копируем элементы
             {
                 arrayData_[index] = otherArray.arrayData_[index];
             }
@@ -222,11 +235,10 @@ DynamicArray<ItemType>& DynamicArray<ItemType>::operator=(const DynamicArray<Ite
     return *this;
 }
 
+// Оператор присваивания перемещением
 template<typename ItemType>
 DynamicArray<ItemType>& DynamicArray<ItemType>::operator=(DynamicArray<ItemType>&& otherArray)
 {
-    std::cout << "DynamicArray::operator=(DynamicArray&&)" << std::endl;
-
     if (this != &otherArray)
     {
         delete[] arrayData_;
@@ -240,10 +252,11 @@ DynamicArray<ItemType>& DynamicArray<ItemType>::operator=(DynamicArray<ItemType>
     return *this;
 }
 
+// Вставка элемента по индексу
 template<typename ItemType>
 bool DynamicArray<ItemType>::insertAt(const int index, const ItemType& value)
 {
-    if (index == 0 && arrayLength_ == 0)
+    if (index == 0 && arrayLength_ == 0) // Вставка в пустой массив
     {
         arrayData_ = new ItemType[1];
 
@@ -254,16 +267,16 @@ bool DynamicArray<ItemType>::insertAt(const int index, const ItemType& value)
         return true;
     }
 
-    if (index < 0 || index > arrayLength_) return false;
+    if (index < 0 || index > arrayLength_) return false; // Проверка индекса
 
     ItemType* tempArrayData = new ItemType[arrayLength_ + 1];
 
-    for (int curIdx = 0; curIdx < index; ++curIdx)
+    for (int curIdx = 0; curIdx < index; ++curIdx) // Копирование элемента до позиции вставки
     {
         tempArrayData[curIdx] = arrayData_[curIdx];
     }
 
-    for (int curIdx = index; curIdx < arrayLength_; ++curIdx)
+    for (int curIdx = index; curIdx < arrayLength_; ++curIdx) // Копирование элемента после позиции вставки
     {
         tempArrayData[curIdx + 1] = arrayData_[curIdx];
     }
@@ -279,6 +292,7 @@ bool DynamicArray<ItemType>::insertAt(const int index, const ItemType& value)
     return true;
 }
 
+// Добавление элемента в конец
 template<typename ItemType>
 void DynamicArray<ItemType>::add(const ItemType& value)
 {
@@ -297,6 +311,18 @@ void DynamicArray<ItemType>::add(const ItemType& value)
     arrayData_ = tempArrayData;
 }
 
+// Вставка элемента перед указанным итератором
+template<typename ItemType>
+bool DynamicArray<ItemType>::insertBefore(ItemType* iterator, const ItemType& value)
+{
+    if (iterator < arrayData_ || iterator > arrayData_ + arrayLength_)
+        return false;
+
+    int index = iterator - arrayData_;
+    return insertAt(index, value);  
+}
+
+// Поиск элемента
 template<typename ItemType>
 int DynamicArray<ItemType>::find(const ItemType value) const
 {
@@ -306,6 +332,7 @@ int DynamicArray<ItemType>::find(const ItemType value) const
     return -1;
 }
 
+// Удаление элемента по индексу
 template<typename ItemType>
 bool DynamicArray<ItemType>::removeAt(const int index)
 {
@@ -323,6 +350,18 @@ bool DynamicArray<ItemType>::removeAt(const int index)
     return true;
 }
 
+// Удаление элемента по итератору
+template<typename ItemType>
+bool DynamicArray<ItemType>::removeAtIterator(ItemType* iterator)
+{
+    if (iterator < arrayData_ || iterator >= arrayData_ + arrayLength_)
+        return false;
+
+    int index = iterator - arrayData_;
+    return removeAt(index);  
+}
+
+// Удаление первого вхождения по значению
 template<typename ItemType>
 bool DynamicArray<ItemType>::removeValue(const ItemType value)
 {
@@ -331,6 +370,7 @@ bool DynamicArray<ItemType>::removeValue(const ItemType value)
     return removeAt(index);
 }
 
+// Удаление всех вхождений по значению
 template<typename ItemType>
 void DynamicArray<ItemType>::removeAll(const ItemType value)
 {
@@ -355,6 +395,35 @@ void DynamicArray<ItemType>::removeAll(const ItemType value)
     arrayLength_ = countToKeep;
 }
 
+// Удаление диапазона элементов по итераторам
+template<typename ItemType>
+bool DynamicArray<ItemType>::removeRange(ItemType* first, ItemType* last)
+{
+    if (first < arrayData_ || last > arrayData_ + arrayLength_ || first >= last)
+        return false;
+
+    int startIndex = first - arrayData_;
+    int endIndex = last - arrayData_;
+    int rangeLength = endIndex - startIndex;
+
+    if (rangeLength <= 0) return false;
+
+    ItemType* tempArrayData = (arrayLength_ > rangeLength) ? new ItemType[arrayLength_ - rangeLength] : nullptr;
+
+    for (int i = 0; i < startIndex; ++i)
+        tempArrayData[i] = arrayData_[i];
+
+    for (int i = endIndex, j = startIndex; i < arrayLength_; ++i, ++j)
+        tempArrayData[j] = arrayData_[i];
+
+    delete[] arrayData_;
+    arrayData_ = tempArrayData;
+    arrayLength_ -= rangeLength;
+
+    return true;
+}
+
+// Сортировка по возрастанию (пузырьком)
 template<typename ItemType>
 void DynamicArray<ItemType>::sort()
 {
@@ -368,6 +437,21 @@ void DynamicArray<ItemType>::sort()
             }
 }
 
+// Сортировка по убыванию (пузырьком)
+template<typename ItemType>
+void DynamicArray<ItemType>::sort2()
+{
+    for (int i = 0; i < arrayLength_ - 1; ++i)
+        for (int j = 0; j < arrayLength_ - i - 1; ++j)
+            if (arrayData_[j] < arrayData_[j + 1])
+            {
+                ItemType temp = arrayData_[j];
+                arrayData_[j] = arrayData_[j + 1];
+                arrayData_[j + 1] = temp;
+            }
+}
+
+// Поиск максимального элемента
 template<typename ItemType>
 ItemType DynamicArray<ItemType>::getMax() const
 {
@@ -379,6 +463,7 @@ ItemType DynamicArray<ItemType>::getMax() const
     return maxVal;
 }
 
+// Поиск минимального элемента
 template<typename ItemType>
 ItemType DynamicArray<ItemType>::getMin() const
 {
@@ -390,6 +475,7 @@ ItemType DynamicArray<ItemType>::getMin() const
     return minVal;
 }
 
+// Конкатенация массивов (+)
 template<typename ItemType>
 DynamicArray<ItemType> DynamicArray<ItemType>::operator+(const DynamicArray& other) const
 {
@@ -406,6 +492,7 @@ DynamicArray<ItemType> DynamicArray<ItemType>::operator+(const DynamicArray& oth
     return result;
 }
 
+// Конкатенация с присваиванием (+=)
 template<typename ItemType>
 DynamicArray<ItemType>& DynamicArray<ItemType>::operator+=(const DynamicArray& other)
 {
@@ -424,6 +511,7 @@ DynamicArray<ItemType>& DynamicArray<ItemType>::operator+=(const DynamicArray& o
     return *this;
 }
 
+// Опреатор сравнения на равенство
 template<typename ItemType>
 bool DynamicArray<ItemType>::operator==(const DynamicArray& other) const
 {
@@ -434,12 +522,14 @@ bool DynamicArray<ItemType>::operator==(const DynamicArray& other) const
     return true;
 }
 
+// Оператор сравнения на неравенство
 template<typename ItemType>
 bool DynamicArray<ItemType>::operator!=(const DynamicArray& other) const
 {
     return !(*this == other);
 }
 
+// Обмен содержимого двух массивов
 template<typename ItemType>
 void DynamicArray<ItemType>::swap(DynamicArray& other)
 {

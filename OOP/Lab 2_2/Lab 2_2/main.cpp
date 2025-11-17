@@ -7,8 +7,8 @@ using namespace std;
 
 int main()
 {
-    SetConsoleOutputCP(1251);
-    SetConsoleCP(1251);
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
 
     // Конструктор из обычного массива
     int testArray[] = { 1, 2, 3, 4, 5 };
@@ -96,12 +96,106 @@ int main()
     for (int i = 0; i < arr1.getLength(); i++) cout << arr1[i] << (i < arr1.getLength() - 1 ? ", " : " ");
     cout << "]\n";
 
-    // Сортировка и поиск min/max
+    DynamicArray<int> arr1_copy = arr1;
+
+    // Сортировка по убыванию
+    arr1.sort2();
+    cout << "\nПосле сортировки по убыванию: [ ";
+    for (int i = 0; i < arr1.getLength(); i++) cout << arr1[i] << (i < arr1.getLength() - 1 ? ", " : " ");
+    cout << "]\n";
+
+    arr1 = arr1_copy;
+
+    // Сортировка по возрастанию
     arr1.sort();
     cout << "\nПосле сортировки: [ ";
     for (int i = 0; i < arr1.getLength(); i++) cout << arr1[i] << (i < arr1.getLength() - 1 ? ", " : " ");
     cout << "]\n";
+    
+    // Максимум/Минимум
     cout << "Максимум: " << arr1.getMax() << ", Минимум: " << arr1.getMin() << "\n";
+
+    // Тестирование итераторов
+    cout << "\nТестирование итераторов" << endl;
+
+    // Ввод тестового массива для итераторов
+    DynamicArray<int> iterArr;
+    cout << "Введите тестовый массив для работы с итераторами:\n";
+    cin >> iterArr;
+    cout << "Тестовый массив для итераторов: " << iterArr << endl;
+
+    // Использование begin() и end()
+    cout << "Элементы через итераторы: ";
+    for (auto it = iterArr.begin(); it != iterArr.end(); ++it) {
+        cout << *it << " ";
+    }
+    cout << endl;
+
+    // Вставка перед итератором
+    cout << "\nВставка перед итератором" << endl;
+    cout << "Введите индекс элемента, перед которым вставить: ";
+    cin >> index;
+    cout << "Введите значение для вставки: ";
+    cin >> value;
+
+    if (index >= 0 && index < iterArr.getLength()) {
+        auto it = iterArr.begin() + index;
+        if (iterArr.insertBefore(it, value)) {
+            cout << "После вставки: [ ";
+            for (int i = 0; i < iterArr.getLength(); i++) cout << iterArr[i] << (i < iterArr.getLength() - 1 ? ", " : " ");
+            cout << "]\n";
+        }
+        else {
+            cout << "Ошибка вставки!" << endl;
+        }
+    }
+    else {
+        cout << "Неверный индекс!" << endl;
+    }
+
+    // Удаление по итератору
+    cout << "\nУдаление по итератору" << endl;
+    cout << "Введите индекс элемента для удаления: ";
+    cin >> index;
+
+    if (index >= 0 && index < iterArr.getLength()) {
+        auto it = iterArr.begin() + index;
+        if (iterArr.removeAtIterator(it)) {
+            cout << "После удаления: [ ";
+            for (int i = 0; i < iterArr.getLength(); i++) cout << iterArr[i] << (i < iterArr.getLength() - 1 ? ", " : " ");
+            cout << "]\n";
+        }
+        else {
+            cout << "Ошибка удаления!" << endl;
+        }
+    }
+    else {
+        cout << "Неверный индекс!" << endl;
+    }
+
+   // Удаление диапазона
+    cout << "\nУдаление диапазона" << endl;
+    int startIdx, endIdx;
+    cout << "Введите начальный индекс диапазона: ";
+    cin >> startIdx;
+    cout << "Введите конечный индекс диапазона: ";
+    cin >> endIdx;
+
+    if (startIdx >= 0 && endIdx <= iterArr.getLength() && startIdx < endIdx) {
+        auto first = iterArr.begin() + startIdx;
+        auto last = iterArr.begin() + endIdx;
+        if (iterArr.removeRange(first, last)) {
+            cout << "После удаления диапазона: [ ";
+            for (int i = 0; i < iterArr.getLength(); i++) cout << iterArr[i] << (i < iterArr.getLength() - 1 ? ", " : " ");
+            cout << "]\n";
+        }
+        else {
+            cout << "Ошибка удаления диапазона!" << endl;
+        }
+    }
+    else {
+        cout << "Неверные индексы диапазона!" << endl;
+    }
 
 
     // Изменение элемента
