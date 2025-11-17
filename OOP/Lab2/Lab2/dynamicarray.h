@@ -15,6 +15,9 @@ public:
     // Конструктор копирования ( создаёт новый объект как копию уже существующего массива )
     DynamicArray(const DynamicArray&);
 
+    // Конструктор перемещения
+    DynamicArray(DynamicArray&& other);
+
     // Деструктор ( освобождает динамически выделенную память при уничтожении объекта )
     ~DynamicArray();
 
@@ -33,6 +36,9 @@ public:
 
     // Сортировка элементов (пузырьком)
     void sort();
+
+    // Сортировка элементов по убыванию (пузырьком)
+    void sort2();
 
     //  Вставка элемента по индексу. Если индекс некорректный, вернуть false
     bool insertAt(const int, const int);
@@ -60,6 +66,15 @@ public:
     // Оператор присваивания копированием (=)
     DynamicArray& operator=(const DynamicArray&);
 
+    // Оператор присваивания перемещением (=)
+    DynamicArray& operator=(DynamicArray&& other);
+
+    // Итераторы
+    int* begin() { return arrayData_; }
+    const int* begin() const { return arrayData_; }
+    int* end() { return arrayData_ + arrayLength_; }
+    const int* end() const { return arrayData_ + arrayLength_; }
+
     // Добавление элемента в конец массива
     void add(const int value);
 
@@ -79,6 +94,15 @@ public:
     // Перегрузка сравнение (== и !=)
     bool operator==(const DynamicArray& other) const;
     bool operator!=(const DynamicArray& other) const;
+
+    // Вставка перед указанным итератором
+    bool insertBefore(int* iterator, const int value);
+
+    // Удаление элемента по итератору
+    bool removeAtIterator(int* iterator);
+
+    // Удаление диапазона элементов
+    bool removeRange(int* first, int* last);
 
 private:
     int* arrayData_;

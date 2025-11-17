@@ -7,8 +7,6 @@ DynamicArray::DynamicArray() : arrayData_(nullptr), arrayLength_(0) {}
 // Конструктор из обычного массива
 DynamicArray::DynamicArray(const int* data, int initialLength) : arrayLength_(initialLength)
 {
-    std::cout << "DynamicArray::DynamicArray(const int*, int)" << std::endl;
-
     if (initialLength > 0) {
         arrayData_ = new int[initialLength];
         for (int i = 0; i < initialLength; i++) {
@@ -39,6 +37,15 @@ DynamicArray::DynamicArray(const DynamicArray& otherArray)
     {
         arrayData_[index] = otherArray.arrayData_[index];
     }
+}
+
+// Конструктор перемещения
+DynamicArray::DynamicArray(DynamicArray&& other)
+    : arrayData_(other.arrayData_), arrayLength_(other.arrayLength_)
+{
+    // "Обнуляем" исходный объект
+    other.arrayData_ = nullptr;
+    other.arrayLength_ = 0;
 }
 
 // Деструктор
@@ -73,6 +80,25 @@ DynamicArray& DynamicArray::operator=(const DynamicArray& otherArray)
     return *this;
 }
 
+// Оператор присваивания перемещением
+DynamicArray& DynamicArray::operator=(DynamicArray&& other)
+{
+    if (this != &other)
+    {
+        // Освобождаем текущие ресурсы
+        delete[] arrayData_;
+
+        // Перехватываем ресурсы другого объекта
+        arrayData_ = other.arrayData_;
+        arrayLength_ = other.arrayLength_;
+
+        // "Обнуляем" исходный объект
+        other.arrayData_ = nullptr;
+        other.arrayLength_ = 0;
+    }
+    return *this;
+}
+
 //  Вставка элемента по индексу. Если индекс некорректный, вернуть false
 bool DynamicArray::insertAt(const int index, const int value)
 {
@@ -100,6 +126,17 @@ bool DynamicArray::insertAt(const int index, const int value)
     delete[] arrayData_;
     arrayData_ = tempArrayData;
     return true;
+}
+
+// Вставка элемента перед итератором
+bool DynamicArray::insertBefore(int* iterator, const int value)
+{
+    if (iterator < arrayData_ || iterator > arrayData_ + arrayLength_)
+        return false;
+
+    // Вычисляем индекс для вставки
+    int index = iterator - arrayData_;
+    return insertAt(index, value);
 }
 
 // Обмен содержимого с другим массивом (swap)
@@ -142,6 +179,17 @@ bool DynamicArray::removeAt(const int index)
     return true;
 }
 
+// Удаление элемента по итератору
+bool DynamicArray::removeAtIterator(int* iterator)
+{
+    if (iterator < arrayData_ || iterator >= arrayData_ + arrayLength_)
+        return false;
+
+    // Вычисляем индекс для удаления
+    int index = iterator - arrayData_;
+    return removeAt(index);
+}
+
 // Удаление элемента по значению (первое вхождение). Если элемент отсутствует в массиве, вернуть false
 bool DynamicArray::removeValue(const int value)
 {
@@ -159,6 +207,24 @@ void DynamicArray::sort()
         for (int j = 0; j < arrayLength_ - i - 1; ++j)
         {
             if (arrayData_[j] > arrayData_[j + 1])
+            {
+                int temp = arrayData_[j];
+                arrayData_[j] = arrayData_[j + 1];
+                arrayData_[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Сортировка элементов массива по убыванию ( Пузырьком )
+void DynamicArray::sort2()
+{
+    for (int i = 0; i < arrayLength_ - 1; ++i)
+    {
+        for (int j = 0; j < arrayLength_ - i - 1; ++j)
+        {
+            // Меняем условие: если текущий элемент МЕНЬШЕ следующего - меняем местами
+            if (arrayData_[j] < arrayData_[j + 1])
             {
                 int temp = arrayData_[j];
                 arrayData_[j] = arrayData_[j + 1];
@@ -241,6 +307,36 @@ void DynamicArray::removeAll(const int value)
     delete[] arrayData_;
     arrayData_ = tempArrayData;
     arrayLength_ = countToKeep;
+}
+
+// Удаление диапазона элементов по итераторам
+bool DynamicArray::removeRange(int* first, int* last)
+{
+    if (first < arrayData_ || last > arrayData_ + arrayLength_ || first >= last)
+        return false;
+
+    int startIndex = first - arrayData_;
+    int endIndex = last - arrayData_;
+    int rangeLength = endIndex - startIndex;
+
+    if (rangeLength <= 0) return false;
+
+    // Создаем новый массив без удаляемого диапазона
+    int* tempArrayData = (arrayLength_ > rangeLength) ? new int[arrayLength_ - rangeLength] : nullptr;
+
+    // Копируем элементы до диапазона
+    for (int i = 0; i < startIndex; ++i)
+        tempArrayData[i] = arrayData_[i];
+
+    // Копируем элементы после диапазона
+    for (int i = endIndex, j = startIndex; i < arrayLength_; ++i, ++j)
+        tempArrayData[j] = arrayData_[i];
+
+    delete[] arrayData_;
+    arrayData_ = tempArrayData;
+    arrayLength_ -= rangeLength;
+
+    return true;
 }
 
 // Поиск максимального элемента

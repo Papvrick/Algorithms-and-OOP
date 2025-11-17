@@ -5,18 +5,41 @@ using namespace std;
 
 int main()
 {
-    SetConsoleOutputCP(1251);
-    SetConsoleCP(1251);
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
+
     // Конструктор из обычного массива
     cout << "Конструктор из обычного массива:" << endl;
     int testData[] = { 1, 2, 3, 4, 5 };
     DynamicArray testArr(testData, 5);
     cout << testArr << endl;
 
+    // Конструктор перемещения
+    cout << "\nТестирование конструктора перемещения:" << endl;
+    DynamicArray sourceArr;
+    cout << "Введите элементы для исходного массива:\n";
+    cin >> sourceArr;
+    cout << "Исходный массив: " << sourceArr << endl;
+
+    DynamicArray movedArr(move(sourceArr));
+    cout << "Перемещенный массив: " << movedArr << endl;
+    cout << "Исходный массив после перемещения: " << sourceArr << endl;
+
+    // Присваивание перемещением
+    cout << "\nТестирование присваивания перемещением:" << endl;
+    DynamicArray sourceArr2;
+    cout << "Введите элементы для второго исходного массива:\n";
+    cin >> sourceArr2;
+    cout << "Второй исходный массив: " << sourceArr2 << endl;
+
+    DynamicArray assignedArr;
+    assignedArr = move(sourceArr2);
+    cout << "Массив после присваивания перемещением: " << assignedArr << endl;
+    cout << "Второй исходный массив после присваивания: " << sourceArr2 << endl;
+
     DynamicArray arr1, arr2;
 
     int val, idx;
-
 
     cout << " Первый массив:\n";
     cin >> arr1;
@@ -83,13 +106,88 @@ int main()
     arr1.removeAll(val);
     cout << "После удаления всех: " << arr1 << endl;
 
-    // Сортировка
+    // Сортировка по убыванию
+    arr1.sort2();
+    cout << "\nПосле сортировки по убыванию: " << arr1 << endl;
+
+    // Сортировка по возрастанию
     arr1.sort();
-    cout << "\nПосле сортировки: " << arr1 << endl;
+    cout << "\nПосле сортировки по возрастанию: " << arr1 << endl;
 
     // Максимум и минимум
     if (arr1.getLength() > 0)
         cout << "Максимум: " << arr1.getMax() << ", Минимум: " << arr1.getMin() << endl;
+
+    // Тестирование итераторов
+    cout << "\nТестирование итераторов" << endl;
+    cout << "Первый массив: " << arr1 << endl;
+
+    // Использование begin() и end()
+    cout << "Элементы через итераторы: ";
+    for (auto it = arr1.begin(); it != arr1.end(); ++it) {
+        cout << *it << " ";
+    }
+    cout << endl;
+
+    // Вставка перед итератором
+    cout << "\nВставка перед итератором:" << endl;
+    cout << "Введите индекс элемента, перед которым вставить: ";
+    cin >> idx;
+    cout << "Введите значение для вставки: ";
+    cin >> val;
+
+    if (idx >= 0 && idx < arr1.getLength()) {
+        auto it = arr1.begin() + idx;
+        if (arr1.insertBefore(it, val)) {
+            cout << "После вставки: " << arr1 << endl;
+        }
+        else {
+            cout << "Ошибка вставки!" << endl;
+        }
+    }
+    else {
+        cout << "Неверный индекс!" << endl;
+    }
+
+    // Удаление по итератору
+    cout << "\nУдаление по итератору:" << endl;
+    cout << "Введите индекс элемента для удаления: ";
+    cin >> idx;
+
+    if (idx >= 0 && idx < arr1.getLength()) {
+        auto it = arr1.begin() + idx;
+        if (arr1.removeAtIterator(it)) {
+            cout << "После удаления: " << arr1 << endl;
+        }
+        else {
+            cout << "Ошибка удаления!" << endl;
+        }
+    }
+    else {
+        cout << "Неверный индекс!" << endl;
+    }
+
+    // Удаление диапазона
+    cout << "\nУдаление диапазона по итераторам:" << endl;
+    int startIdx, endIdx;
+    cout << "Введите начальный индекс диапазона: ";
+    cin >> startIdx;
+    cout << "Введите конечный индекс диапазона: ";
+    cin >> endIdx;
+
+    if (startIdx >= 0 && endIdx <= arr1.getLength() && startIdx < endIdx) {
+        auto first = arr1.begin() + startIdx;
+        auto last = arr1.begin() + endIdx;
+        if (arr1.removeRange(first, last)) {
+            cout << "После удаления диапазона: " << arr1 << endl;
+        }
+        else {
+            cout << "Ошибка удаления диапазона!" << endl;
+        }
+    }
+    else {
+        cout << "Неверные индексы диапазона!" << endl;
+    }
 
     // Конкатенация массивов
     DynamicArray arr3 = arr1 + arr2;
