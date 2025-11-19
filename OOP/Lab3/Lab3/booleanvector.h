@@ -34,6 +34,10 @@ public:
     BooleanVector operator<<(const uint32_t shift) const; //Сдвиг влево
     BooleanVector operator>>(const uint32_t shift) const; //Сдвиг вправо
 
+    // Циклические сдвиги
+    BooleanVector cyclicShiftLeft(const uint32_t shift) const;  // Циклический сдвиг влево
+    BooleanVector cyclicShiftRight(const uint32_t shift) const; // Циклический сдвиг вправо
+
     // Потоковый ввод/вывод
     friend std::ostream& operator<<(std::ostream& os, const BooleanVector& bv);
     friend std::istream& operator>>(std::istream& is, BooleanVector& bv);

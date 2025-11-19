@@ -278,8 +278,61 @@ int main()
 
     cout << endl;
 
+    // Циклические сдвиги
+    cout << "9. Циклические сдвиги" << endl;
+    BooleanVector testvector3, testvector4;
+    int left_cyclic, right_cyclic;
+
+    cout << "Введите вектор для проверки циклического сдвига влево: ";
+    try {
+        cin >> testvector3;
+    }
+    catch (const std::runtime_error& e) {
+        cout << "Ошибка ввода: " << e.what() << endl;
+        cout << "введите вектор заново: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cin >> testvector3;
+    }
+
+    cout << "На сколько хотите сдвинуть?: ";
+    cin >> left_cyclic;
+
+    try {
+        BooleanVector resultleft_cyclic = testvector3.cyclicShiftLeft(left_cyclic);
+        cout << "Результат циклического сдвига влево: " << resultleft_cyclic << endl;
+    }
+    catch (const std::runtime_error& e) {
+        cout << "Ошибка циклического сдвига влево: " << e.what() << endl;
+    }
+
+    cout << "Введите вектор для проверки циклического сдвига вправо: ";
+    try {
+        cin >> testvector4;
+    }
+    catch (const std::runtime_error& e) {
+        cout << "Ошибка ввода: " << e.what() << endl;
+        cout << "введите вектор заново: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cin >> testvector4;
+    }
+
+    cout << "На сколько хотите сдвинуть?: ";
+    cin >> right_cyclic;
+
+    try {
+        BooleanVector resultright_cyclic = testvector4.cyclicShiftRight(right_cyclic);
+        cout << "Результат циклического сдвига вправо: " << resultright_cyclic << endl;
+    }
+    catch (const std::runtime_error& e) {
+        cout << "Ошибка циклического сдвига вправо: " << e.what() << endl;
+    }
+
+    cout << endl;
+
     // Установка в 0/1 k компонент, начиная с i-ой
-    cout << "9. Тест установки k компонент, начиная с i-ой" << endl;
+    cout << "10. Тест установки k компонент, начиная с i-ой" << endl;
     BooleanVector testSetBits;
     cout << "Введите вектор: ";
     try {
@@ -310,7 +363,7 @@ int main()
     cout << endl;
 
     // Установка в 0/1 всех компонент вектора
-    cout << "10. Тест установки всех компонент вектора" << endl;
+    cout << "11. Тест установки всех компонент вектора" << endl;
     BooleanVector testSetAll;
     cout << "Введите вектор: ";
     try {

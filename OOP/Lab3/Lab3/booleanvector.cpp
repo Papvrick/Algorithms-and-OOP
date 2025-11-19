@@ -318,6 +318,55 @@ BooleanVector BooleanVector::operator>>(const uint32_t shift) const
     return result;
 }
 
+// Циклические сдвиги
+BooleanVector BooleanVector::cyclicShiftLeft(const uint32_t shift) const
+{
+    if (numBits_ == 0) {
+        return BooleanVector(*this);
+    }
+
+    uint32_t actualShift = shift % numBits_; // Нормализуем сдвиг
+    if (actualShift == 0) {
+        return BooleanVector(*this); // Возвращаем копию
+    }
+
+    BooleanVector result(numBits_, false);
+
+    // Выполняем циклический сдвиг влево
+    for (uint32_t i = 0; i < numBits_; i++) {
+        uint32_t newIndex = (i + actualShift) % numBits_;
+        if ((*this)[i]) {
+            result.setBit(newIndex, 1);
+        }
+    }
+
+    return result;
+}
+
+BooleanVector BooleanVector::cyclicShiftRight(const uint32_t shift) const
+{
+    if (numBits_ == 0) {
+        return BooleanVector(*this);
+    }
+
+    uint32_t actualShift = shift % numBits_; // Нормализуем сдвиг
+    if (actualShift == 0) {
+        return BooleanVector(*this); // Возвращаем копию
+    }
+
+    BooleanVector result(numBits_, false);
+
+    // Выполняем циклический сдвиг вправо
+    for (uint32_t i = 0; i < numBits_; i++) {
+        uint32_t newIndex = (i + numBits_ - actualShift) % numBits_;
+        if ((*this)[i]) {
+            result.setBit(newIndex, 1);
+        }
+    }
+
+    return result;
+}
+
 // ввод/вывод
 std::ostream& operator<<(std::ostream& os, const BooleanVector& bv)
 {
