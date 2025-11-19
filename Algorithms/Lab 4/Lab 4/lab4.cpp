@@ -3,21 +3,21 @@
 #include <chrono>
 #include <Windows.h>
 
-// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РІРІРѕРґР° РјР°СЃСЃРёРІР° СЃ РєРѕРЅСЃРѕР»Рё
+// Функция для ввода массива с консоли
 std::vector<int> inputArrayFromConsole() {
     std::vector<int> arr;
     int numValues;
 
-    std::cout << "Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РјР°СЃСЃРёРІР°: ";
+    std::cout << "Введите количество элементов массива: ";
     std::cin >> numValues;
 
     if (numValues <= 0) {
-        std::cout << "РќРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ СЂР°Р·РјРµСЂ РјР°СЃСЃРёРІР°!" << std::endl;
+        std::cout << "Некорректный размер массива!" << std::endl;
         return arr;
     }
 
     arr.resize(numValues);
-    std::cout << "Р’РІРµРґРёС‚Рµ " << numValues << " СЌР»РµРјРµРЅС‚РѕРІ РјР°СЃСЃРёРІР° С‡РµСЂРµР· РїСЂРѕР±РµР»: ";
+    std::cout << "Введите " << numValues << " элементов массива через пробел: ";
 
     for (int i = 0; i < numValues; i++) {
         std::cin >> arr[i];
@@ -26,14 +26,14 @@ std::vector<int> inputArrayFromConsole() {
     return arr;
 }
 
-// Р¤СѓРЅРєС†РёСЏ РґР»СЏ С‡С‚РµРЅРёСЏ РјР°СЃСЃРёРІР° РёР· С„Р°Р№Р»Р°
+// Функция для чтения массива из файла
 std::vector<int> readArrayFromFile(const std::string& filename) {
     std::vector<int> arr;
     FILE* file = NULL;
     errno_t err = fopen_s(&file, filename.c_str(), "r");
 
     if (file == NULL) {
-        std::cout << "РћС€РёР±РєР°: РЅРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» " << filename << std::endl;
+        std::cout << "Ошибка: не удалось открыть файл " << filename << std::endl;
         return arr;
     }
 
@@ -46,7 +46,7 @@ std::vector<int> readArrayFromFile(const std::string& filename) {
     return arr;
 }
 
-// Р¤СѓРЅРєС†РёСЏ РґР»СЏ С‡С‚РµРЅРёСЏ РІСЃРµС… РјР°СЃСЃРёРІРѕРІ РёР· СЃРїРёСЃРєР° С„Р°Р№Р»РѕРІ
+// Функция для чтения всех массивов из списка файлов
 std::vector<std::vector<int>> readArraysFromFiles(const std::vector<std::string>& filenames) {
     std::vector<std::vector<int>> arrays;
 
@@ -54,14 +54,14 @@ std::vector<std::vector<int>> readArraysFromFiles(const std::vector<std::string>
         std::vector<int> arr = readArrayFromFile(filenames[i]);
         if (!arr.empty()) {
             arrays.push_back(arr);
-            std::cout << "РџСЂРѕС‡РёС‚Р°РЅ РјР°СЃСЃРёРІ РёР· " << filenames[i] << " (СЂР°Р·РјРµСЂ: " << arr.size() << ")" << std::endl;
+            std::cout << "Прочитан массив из " << filenames[i] << " (размер: " << arr.size() << ")" << std::endl;
         }
     }
 
     return arrays;
 }
 
-// Р¤СѓРЅРєС†РёСЏ РїСЂРѕРІРµСЂРєРё РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅРѕСЃС‚Рё РјР°СЃСЃРёРІР°
+// Функция проверки отсортированности массива
 bool isSorted(const std::vector<int>& arr) {
     for (size_t i = 1; i < arr.size(); ++i) {
         if (arr[i] < arr[i - 1]) {
@@ -71,15 +71,15 @@ bool isSorted(const std::vector<int>& arr) {
     return true;
 }
 
-// РђР»РіРѕСЂРёС‚Рј СЃРѕСЂС‚РёСЂРѕРІРєРё РЁРµР»Р»Р° СЃ Р·Р°РґР°РЅРЅРѕР№ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊСЋ С€Р°РіРѕРІ
+// Алгоритм сортировки Шелла с заданной последовательностью шагов
 void shellSort(std::vector<int>& arr, const std::vector<int>& gaps) {
     for (size_t i = 0; i < gaps.size(); ++i) {
         int s = gaps[i];
         for (int b = 0; b < s; ++b) {
-            // РЎРѕСЂС‚РёСЂРѕРІРєР° РІСЃС‚Р°РІРєР°РјРё РґР»СЏ РїРѕРґРїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё
+            // Сортировка вставками для подпоследовательности
             for (int j = b + s; j < arr.size(); j = j + s) {
-                int x = arr[j]; // С‚РµРєСѓС‰РёР№ СЌР»РµРјРµРЅС‚ РґР»СЏ РІСЃС‚Р°РІРєРё
-                int k = j - s; // РїСЂРµРґС‹РґСѓС‰РёР№ СЌР»РµРјРµРЅС‚ РІ РїРѕРґРїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё
+                int x = arr[j]; // текущий элемент для вставки
+                int k = j - s; // предыдущий элемент в подпоследовательности
                 while (k >= 0 && arr[k] > x) { 
                     arr[k + s] = arr[k];
                     k = k - s;
@@ -90,7 +90,7 @@ void shellSort(std::vector<int>& arr, const std::vector<int>& gaps) {
     }
 }
 
-// Р“РµРЅРµСЂР°С†РёСЏ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё С€Р°РіРѕРІ РїРѕ РјРµС‚РѕРґСѓ РЁРµР»Р»Р°
+// Генерация последовательности шагов по методу Шелла
 std::vector<int> gaps1(int n) {
     std::vector<int> gaps;
     for (int h = n / 2; h > 0; h = h / 2) {
@@ -99,7 +99,7 @@ std::vector<int> gaps1(int n) {
     return gaps;
 }
 
-// Р“РµРЅРµСЂР°С†РёСЏ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё С€Р°РіРѕРІ РїРѕ РІС‚РѕСЂРѕРјСѓ РјРµС‚РѕРґСѓ
+// Генерация последовательности шагов по второму методу
 std::vector<int> gaps2(int n) {
     std::vector<int> gaps;
     int m = 1;
@@ -109,7 +109,7 @@ std::vector<int> gaps2(int n) {
         gaps.push_back(gap);
         m++;
     }
-    // Р Р°Р·РІРѕСЂРѕС‚ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё РґР»СЏ СѓР±С‹РІР°РЅРёСЏ 
+    // Разворот последовательности для убывания 
     std::vector<int> reversed_gaps;
     for (int i = (int)gaps.size() - 1; i >= 0; i--) {
         reversed_gaps.push_back(gaps[i]);
@@ -118,7 +118,7 @@ std::vector<int> gaps2(int n) {
 }
 
 
-// Р“РµРЅРµСЂР°С†РёСЏ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё С€Р°РіРѕРІ РїРѕ РјРµС‚РѕРґСѓ РљРЅСѓС‚Р°
+// Генерация последовательности шагов по методу Кнута
 std::vector<int> gaps3(int n) {
     std::vector<int> gaps;
     int h = 1;
@@ -126,7 +126,7 @@ std::vector<int> gaps3(int n) {
         gaps.push_back(h);
         h = 3 * h + 1;
     }
-    // Р Р°Р·РІРѕСЂРѕС‚ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё РґР»СЏ СѓР±С‹РІР°РЅРёСЏ 
+    // Разворот последовательности для убывания 
     std::vector<int> reversed_gaps;
     for (int i = (int)gaps.size() - 1; i >= 0; i--) {
         reversed_gaps.push_back(gaps[i]);
@@ -135,7 +135,7 @@ std::vector<int> gaps3(int n) {
 }
 
 
-// РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р°Р»РіРѕСЂРёС‚РјР° РЅР° Р·Р°РґР°РЅРЅРѕРј РјР°СЃСЃРёРІРµ
+// Тестирование алгоритма на заданном массиве
 void testSort(const std::vector<int>& testArray, const std::string& gapType) {
     std::vector<int> gaps;
     if (gapType == "Gaps1") {
@@ -154,20 +154,20 @@ void testSort(const std::vector<int>& testArray, const std::string& gapType) {
     std::chrono::duration<double> duration = timeEnd - timeStart;
 
     if (!isSorted(arr)) {
-        std::cout << "РћС€РёР±РєР°: РјР°СЃСЃРёРІ РЅРµ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅ!" << std::endl;
+        std::cout << "Ошибка: массив не отсортирован!" << std::endl;
         return;
     }
 
-    std::cout << gapType << " РІСЂРµРјСЏ = " << duration.count() << " СЃРµРєСѓРЅРґ" << std::endl;
+    std::cout << gapType << " время = " << duration.count() << " секунд" << std::endl;
 }
 
 int main() {
-    SetConsoleOutputCP(65001);
-    SetConsoleCP(65001);
+    SetConsoleOutputCP(1251);
+    SetConsoleCP(1251);
     int choice;
     std::vector<std::vector<int>> testArrays;
 
-    std::cout << "Р’С‹Р±РµСЂРёС‚Рµ СЃРїРѕСЃРѕР± РІРІРѕРґР° РґР°РЅРЅС‹С…: 1 - С„Р°Р№Р»С‹ СЃ РјР°СЃСЃРёРІР°РјРё, 2 - РІСЂСѓС‡РЅСѓСЋ :" << std::endl;
+    std::cout << "Выберите способ ввода данных: 1 - файлы с массивами, 2 - вручную :" << std::endl;
     std::cin >> choice;
 
     if (choice == 1) {
@@ -186,7 +186,7 @@ int main() {
         testArrays = readArraysFromFiles(filenames);
 
         if (testArrays.empty()) {
-            std::cout << "РћС€РёР±РєР°: РЅРµ СѓРґР°Р»РѕСЃСЊ РїСЂРѕС‡РёС‚Р°С‚СЊ РЅРё РѕРґРЅРѕРіРѕ РјР°СЃСЃРёРІР° РёР· С„Р°Р№Р»РѕРІ" << std::endl;
+            std::cout << "Ошибка: не удалось прочитать ни одного массива из файлов" << std::endl;
             return 1;
         }
     }
@@ -196,17 +196,17 @@ int main() {
             testArrays.push_back(manualArray);
         }
         else {
-            std::cout << "РћС€РёР±РєР°: РЅРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РјР°СЃСЃРёРІ" << std::endl;
+            std::cout << "Ошибка: не удалось создать массив" << std::endl;
             return 1;
         }
     }
     else {
-        std::cout << "РќРµ 1 РёР»Рё 2 " << std::endl;
+        std::cout << "Не 1 или 2 " << std::endl;
         return 1;
     }
 
     for (size_t i = 0; i < testArrays.size(); ++i) {
-        std::cout << "РўРµСЃС‚РѕРІС‹Р№ РјР°СЃСЃРёРІ " << i + 1 << " (СЂР°Р·РјРµСЂ: " << testArrays[i].size() << "):\n";
+        std::cout << "Тестовый массив " << i + 1 << " (размер: " << testArrays[i].size() << "):\n";
         testSort(testArrays[i], "Gaps1");
         testSort(testArrays[i], "Gaps2");
         testSort(testArrays[i], "Gaps3");
