@@ -3,6 +3,7 @@
 #include <chrono>
 #include <Windows.h>
 
+
 // Функция для ввода массива с консоли
 std::vector<int> inputArrayFromConsole() {
     std::vector<int> arr;
@@ -71,8 +72,39 @@ bool isSorted(const std::vector<int>& arr) {
     return true;
 }
 
+// Алгоритм сортировки прямой вставкой
+void insertionSort(std::vector<int>& arr, long long& comparisons, long long& swaps) {
+    comparisons = 0;
+    swaps = 0;
+
+    for (size_t i = 1; i < arr.size(); ++i) {
+        int key = arr[i];
+        int j = i - 1;
+
+        // Сдвиг элементов, которые больше key
+        while (j >= 0) {
+            comparisons++; // Сравнение arr[j] > key
+            if (arr[j] > key) {
+                arr[j + 1] = arr[j];
+                swaps++; // Обмен элементов
+                j--;
+            }
+            else {
+                break;
+            }
+        }
+        arr[j + 1] = key;
+        if (j + 1 != i) { // Если элемент перемещался
+            swaps++; // Учитываем финальную вставку
+        }
+    }
+}
+
 // Алгоритм сортировки Шелла с заданной последовательностью шагов
-void shellSort(std::vector<int>& arr, const std::vector<int>& gaps) {
+void shellSort(std::vector<int>& arr, const std::vector<int>& gaps, long long& comparisons, long long& swaps) {
+    comparisons = 0;
+    swaps = 0;
+
     for (size_t i = 0; i < gaps.size(); ++i) {
         int s = gaps[i];
         for (int b = 0; b < s; ++b) {
@@ -80,11 +112,22 @@ void shellSort(std::vector<int>& arr, const std::vector<int>& gaps) {
             for (int j = b + s; j < arr.size(); j = j + s) {
                 int x = arr[j]; // текущий элемент для вставки
                 int k = j - s; // предыдущий элемент в подпоследовательности
-                while (k >= 0 && arr[k] > x) { 
-                    arr[k + s] = arr[k];
-                    k = k - s;
+
+                while (k >= 0) {
+                    comparisons++; // Сравнение arr[k] > x
+                    if (arr[k] > x) {
+                        arr[k + s] = arr[k];
+                        swaps++; // Обмен элементов
+                        k = k - s;
+                    }
+                    else {
+                        break;
+                    }
                 }
                 arr[k + s] = x;
+                if (k + s != j) { // Если элемент перемещался
+                    swaps++; // Учитываем финальную вставку
+                }
             }
         }
     }
@@ -136,20 +179,29 @@ std::vector<int> gaps3(int n) {
 
 
 // Тестирование алгоритма на заданном массиве
-void testSort(const std::vector<int>& testArray, const std::string& gapType) {
-    std::vector<int> gaps;
-    if (gapType == "Gaps1") {
-        gaps = gaps1(testArray.size());
-    }
-    else if (gapType == "Gaps2") {
-        gaps = gaps2(testArray.size());
-    }
-    else if (gapType == "Gaps3") {
-        gaps = gaps3(testArray.size());
-    }
+void testSort(const std::vector<int>& testArray, const std::string& sortType) {
     std::vector<int> arr = testArray;
+    long long comparisons = 0, swaps = 0;
+
     std::chrono::high_resolution_clock::time_point timeStart = std::chrono::high_resolution_clock::now();
-    shellSort(arr, gaps);
+
+    if (sortType == "Прямая вставка") {
+        insertionSort(arr, comparisons, swaps);
+    }
+    else {
+        std::vector<int> gaps;
+        if (sortType == "Gaps1") {
+            gaps = gaps1(testArray.size());
+        }
+        else if (sortType == "Gaps2") {
+            gaps = gaps2(testArray.size());
+        }
+        else if (sortType == "Gaps3") {
+            gaps = gaps3(testArray.size());
+        }
+        shellSort(arr, gaps, comparisons, swaps);
+    }
+
     std::chrono::high_resolution_clock::time_point timeEnd = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = timeEnd - timeStart;
 
@@ -158,8 +210,11 @@ void testSort(const std::vector<int>& testArray, const std::string& gapType) {
         return;
     }
 
-    std::cout << gapType << " время = " << duration.count() << " секунд" << std::endl;
+    std::cout << sortType << " время = " << duration.count() << " секунд, ";
+    std::cout << "сравнения = " << comparisons << ", ";
+    std::cout << "обмены = " << swaps << std::endl;
 }
+
 
 int main() {
     SetConsoleOutputCP(65001);
@@ -207,6 +262,7 @@ int main() {
 
     for (size_t i = 0; i < testArrays.size(); ++i) {
         std::cout << "Тестовый массив " << i + 1 << " (размер: " << testArrays[i].size() << "):\n";
+        testSort(testArrays[i], "Прямая вставка");
         testSort(testArrays[i], "Gaps1");
         testSort(testArrays[i], "Gaps2");
         testSort(testArrays[i], "Gaps3");
