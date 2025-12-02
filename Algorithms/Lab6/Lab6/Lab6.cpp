@@ -8,7 +8,7 @@
 
 using namespace std;
 
-// Генерация случайного массива
+// Р“РµРЅРµСЂР°С†РёСЏ СЃР»СѓС‡Р°Р№РЅРѕРіРѕ РјР°СЃСЃРёРІР°
 vector<int> generateRandomArray(int size, int min_val, int max_val) {
     random_device rd;
     mt19937 gen(rd());
@@ -21,7 +21,7 @@ vector<int> generateRandomArray(int size, int min_val, int max_val) {
     return arr;
 }
 
-// Вывод массива
+// Р’С‹РІРѕРґ РјР°СЃСЃРёРІР°
 void outputArray(const vector<int>& arr) {
     for (int num : arr) {
         cout << num << " ";
@@ -29,7 +29,7 @@ void outputArray(const vector<int>& arr) {
     cout << endl;
 }
 
-// Проверка на отсортированность
+// РџСЂРѕРІРµСЂРєР° РЅР° РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅРѕСЃС‚СЊ
 bool isSorted(vector<int>& arr) {
     for (int i = 1; i < arr.size(); i++) {
         if (arr[i] < arr[i - 1]) {
@@ -39,13 +39,13 @@ bool isSorted(vector<int>& arr) {
     return true;
 }
 
-// Получение k-го бита числа
+// РџРѕР»СѓС‡РµРЅРёРµ k-РіРѕ Р±РёС‚Р° С‡РёСЃР»Р°
 int getBit(int num, int k) {
     unsigned int unsigned_num = static_cast<unsigned int>(num);
     return (unsigned_num >> k) & 1;
 }
 
-// Рекурсивная функция побитовой сортировки
+// Р РµРєСѓСЂСЃРёРІРЅР°СЏ С„СѓРЅРєС†РёСЏ РїРѕР±РёС‚РѕРІРѕР№ СЃРѕСЂС‚РёСЂРѕРІРєРё
 void bitwiseSort(vector<int>& arr, int l, int r, int k) {
     if (l >= r || k < 0) {
         return;
@@ -54,10 +54,10 @@ void bitwiseSort(vector<int>& arr, int l, int r, int k) {
     int i = l;
     int j = r;
 
-    // Разделяем отрицательные и положительные числа ("-" - влево, "+" - вправо)
+    // Р Р°Р·РґРµР»СЏРµРј РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Рµ Рё РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹Рµ С‡РёСЃР»Р° ("-" - РІР»РµРІРѕ, "+" - РІРїСЂР°РІРѕ)
     if (k == sizeof(int) * 8 - 1) {
-        // "-" число - бит = 1
-        // "+" число - бит = 0
+        // "-" С‡РёСЃР»Рѕ - Р±РёС‚ = 1
+        // "+" С‡РёСЃР»Рѕ - Р±РёС‚ = 0
         while (i <= j) {
             while (i <= j && getBit(arr[i], k) == 1) { // "-"
                 i++;
@@ -73,7 +73,7 @@ void bitwiseSort(vector<int>& arr, int l, int r, int k) {
         }
     }
     else {
-        // Для остальных битов - обычный алгоритм
+        // Р”Р»СЏ РѕСЃС‚Р°Р»СЊРЅС‹С… Р±РёС‚РѕРІ - РѕР±С‹С‡РЅС‹Р№ Р°Р»РіРѕСЂРёС‚Рј
         while (i <= j) {
             while (i <= j && getBit(arr[i], k) == 0) {
                 i++;
@@ -91,18 +91,18 @@ void bitwiseSort(vector<int>& arr, int l, int r, int k) {
         }
     }
 
-    // Рекурсивные вызовы
+    // Р РµРєСѓСЂСЃРёРІРЅС‹Рµ РІС‹Р·РѕРІС‹
     bitwiseSort(arr, l, j, k - 1);
     bitwiseSort(arr, i, r, k - 1);
 }
 
-// Чтение массива из файла
+// Р§С‚РµРЅРёРµ РјР°СЃСЃРёРІР° РёР· С„Р°Р№Р»Р°
 vector<int> readArrayFromFile(const string& filename) {
     vector<int> arr;
     ifstream file(filename);
 
     if (!file.is_open()) {
-        cout << "Ошибка: не удалось открыть файл " << filename << endl;
+        cout << "РћС€РёР±РєР°: РЅРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» " << filename << endl;
         return arr;
     }
 
@@ -115,7 +115,7 @@ vector<int> readArrayFromFile(const string& filename) {
     return arr;
 }
 
-// Чтение всех массивов из списка файлов
+// Р§С‚РµРЅРёРµ РІСЃРµС… РјР°СЃСЃРёРІРѕРІ РёР· СЃРїРёСЃРєР° С„Р°Р№Р»РѕРІ
 vector<vector<int>> readArraysFromFiles(const vector<string>& filenames) {
     vector<vector<int>> arrays;
 
@@ -123,14 +123,14 @@ vector<vector<int>> readArraysFromFiles(const vector<string>& filenames) {
         vector<int> arr = readArrayFromFile(filenames[i]);
         if (!arr.empty()) {
             arrays.push_back(arr);
-            cout << "Прочитан массив из " << filenames[i] << " (размер: " << arr.size() << ")" << endl;
+            cout << "РџСЂРѕС‡РёС‚Р°РЅ РјР°СЃСЃРёРІ РёР· " << filenames[i] << " (СЂР°Р·РјРµСЂ: " << arr.size() << ")" << endl;
         }
     }
 
     return arrays;
 }
 
-// Тестирование побитовой сортировки 
+// РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РїРѕР±РёС‚РѕРІРѕР№ СЃРѕСЂС‚РёСЂРѕРІРєРё 
 double testBitSort(vector<int>& arr) {
     chrono::high_resolution_clock::time_point timeStart = chrono::high_resolution_clock::now();
 
@@ -143,19 +143,20 @@ double testBitSort(vector<int>& arr) {
     chrono::duration<double> duration = timeEnd - timeStart;
 
     if (!isSorted(arr)) {
-        cout << "Ошибка: массив не отсортирован!" << endl;
+        cout << "РћС€РёР±РєР°: РјР°СЃСЃРёРІ РЅРµ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅ!" << endl;
     }
 
     return duration.count();
 }
 
 int main() {
-    setlocale(LC_ALL, "Russian");
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
     srand(time(0));
 
     int choice;
 
-    cout << "Выберите способ ввода данных: 1 - файлы с массивами, 2 - случайный массив:" << endl;
+    cout << "Р’С‹Р±РµСЂРёС‚Рµ СЃРїРѕСЃРѕР± РІРІРѕРґР° РґР°РЅРЅС‹С…: 1 - С„Р°Р№Р»С‹ СЃ РјР°СЃСЃРёРІР°РјРё, 2 - СЃР»СѓС‡Р°Р№РЅС‹Р№ РјР°СЃСЃРёРІ:" << endl;
     cin >> choice;
 
     if (choice == 1) {
@@ -174,47 +175,47 @@ int main() {
         vector<vector<int>> testArrays = readArraysFromFiles(filenames);
 
         if (testArrays.empty()) {
-            cout << "Ошибка: не удалось прочитать массивы из файлов" << endl;
+            cout << "РћС€РёР±РєР°: РЅРµ СѓРґР°Р»РѕСЃСЊ РїСЂРѕС‡РёС‚Р°С‚СЊ РјР°СЃСЃРёРІС‹ РёР· С„Р°Р№Р»РѕРІ" << endl;
             return 1;
         }
 
         for (size_t i = 0; i < testArrays.size(); ++i) {
-            cout << "\nТестовый массив " << i + 1 << " (размер: " << testArrays[i].size() << "):" << endl;
+            cout << "\nРўРµСЃС‚РѕРІС‹Р№ РјР°СЃСЃРёРІ " << i + 1 << " (СЂР°Р·РјРµСЂ: " << testArrays[i].size() << "):" << endl;
             for (int attempt = 1; attempt <= 3; attempt++) {
                 double time = testBitSort(testArrays[i]);
-                cout << "  Попытка " << attempt << ": время = " << time << " секунд" << endl;
+                cout << "  РџРѕРїС‹С‚РєР° " << attempt << ": РІСЂРµРјСЏ = " << time << " СЃРµРєСѓРЅРґ" << endl;
             }
             cout << endl;
         }
     }
     else if (choice == 2) {
         int size, min_val, max_val;
-        cout << "Введите размер массива: ";
+        cout << "Р’РІРµРґРёС‚Рµ СЂР°Р·РјРµСЂ РјР°СЃСЃРёРІР°: ";
         cin >> size;
-        cout << "Введите минимальное значение: ";
+        cout << "Р’РІРµРґРёС‚Рµ РјРёРЅРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ: ";
         cin >> min_val;
-        cout << "Введите максимальное значение: ";
+        cout << "Р’РІРµРґРёС‚Рµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ: ";
         cin >> max_val;
 
         if (size <= 0) {
-            cout << "Некорректный размер массива!" << endl;
+            cout << "РќРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ СЂР°Р·РјРµСЂ РјР°СЃСЃРёРІР°!" << endl;
             return 1;
         }
 
         vector<int> randomArray = generateRandomArray(size, min_val, max_val);
 
-        cout << "Сгенерированный массив: ";
+        cout << "РЎРіРµРЅРµСЂРёСЂРѕРІР°РЅРЅС‹Р№ РјР°СЃСЃРёРІ: ";
         outputArray(randomArray);
 
-        cout << "Тестирование случайного массива (размер: " << size << "):" << endl;
+        cout << "РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ СЃР»СѓС‡Р°Р№РЅРѕРіРѕ РјР°СЃСЃРёРІР° (СЂР°Р·РјРµСЂ: " << size << "):" << endl;
         double time = testBitSort(randomArray);
-        cout << "Время = " << time << " секунд" << endl;
+        cout << "Р’СЂРµРјСЏ = " << time << " СЃРµРєСѓРЅРґ" << endl;
 
-        cout << "Отсортированный массив: ";
+        cout << "РћС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Р№ РјР°СЃСЃРёРІ: ";
         outputArray(randomArray);
     }
     else {
-        cout << "Неверный выбор!" << endl;
+        cout << "РќРµРІРµСЂРЅС‹Р№ РІС‹Р±РѕСЂ!" << endl;
         return 1;
     }
 
