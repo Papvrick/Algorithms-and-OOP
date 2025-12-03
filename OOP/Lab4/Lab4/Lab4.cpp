@@ -1,104 +1,106 @@
 #include <iostream>
 #include <sstream>
 #include "booleanmatrix.h"
+#include <Windows.h>
 
 using namespace std;
 
 int main()
 {
-    setlocale(LC_ALL, "Russian");
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
 
-    // 1. Тестирование конструкторов
-    cout << "\n1. Тестирование конструкторов:" << endl;
+    // 1. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРѕРІ
+    cout << "\n1. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРѕРІ:" << endl;
 
-    // Конструктор по умолчанию
+    // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
     BooleanMatrix matrix0;
-    cout << "\nMatrix0 (по умолчанию):" << endl;
+    cout << "\nMatrix0 (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ):" << endl;
     cout << matrix0;
-    cout << "\nРазмер: " << matrix0.numRows() << "x" << matrix0.numColumns() << endl;
+    cout << "\nР Р°Р·РјРµСЂ: " << matrix0.numRows() << "x" << matrix0.numColumns() << endl;
 
-    // Конструктор с параметрами
+    // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ СЃ РїР°СЂР°РјРµС‚СЂР°РјРё
     BooleanMatrix matrix1(3, 4, true);
-    cout << "\nMatrix1 (3x4, все true):" << endl;
+    cout << "\nMatrix1 (3x4, РІСЃРµ true):" << endl;
     cout << matrix1;
 
-    // Конструктор из char матрицы
+    // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РёР· char РјР°С‚СЂРёС†С‹
     const char* charMatrix[] = {
         "1010",
         "0101",
         "1100"
     };
     BooleanMatrix matrix2(charMatrix, 3);
-    cout << "\nMatrix2 (из char матрицы):" << endl;
+    cout << "\nMatrix2 (РёР· char РјР°С‚СЂРёС†С‹):" << endl;
     cout << matrix2;
 
-    // Конструктор копирования
+    // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ
     BooleanMatrix matrix3(matrix2);
-    cout << "\nMatrix3 (копия Matrix2):" << endl;
+    cout << "\nMatrix3 (РєРѕРїРёСЏ Matrix2):" << endl;
     cout << matrix3;
 
-    // 2. Тестирование размера
-    cout << "\n2. Тестирование размера:" << endl;
-    cout << "Размеры matrix2: " << matrix2.numRows() << "x" << matrix2.numColumns() << endl;
+    // 2. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ СЂР°Р·РјРµСЂР°
+    cout << "\n2. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ СЂР°Р·РјРµСЂР°:" << endl;
+    cout << "Р Р°Р·РјРµСЂС‹ matrix2: " << matrix2.numRows() << "x" << matrix2.numColumns() << endl;
 
-    // 3. Тестирование веса
-    cout << "\n3. Тестирование веса:" << endl;
-    cout << "Вес матрицы matrix2: " << matrix2.getWeight() << endl;
-    cout << "Вес строки 0 matrix2: " << matrix2.getRowWeight(0) << endl;
+    // 3. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РІРµСЃР°
+    cout << "\n3. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РІРµСЃР°:" << endl;
+    cout << "Р’РµСЃ РјР°С‚СЂРёС†С‹ matrix2: " << matrix2.getWeight() << endl;
+    cout << "Р’РµСЃ СЃС‚СЂРѕРєРё 0 matrix2: " << matrix2.getRowWeight(0) << endl;
 
-    // 4. Тестирование конъюнкции и дизъюнкции
-    cout << "\n4. Тестирование конъюнкции и дизъюнкции:" << endl;
+    // 4. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РєРѕРЅСЉСЋРЅРєС†РёРё Рё РґРёР·СЉСЋРЅРєС†РёРё
+    cout << "\n4. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РєРѕРЅСЉСЋРЅРєС†РёРё Рё РґРёР·СЉСЋРЅРєС†РёРё:" << endl;
     BooleanVector conj = matrix2.conjunctionAllRows();
     BooleanVector disj = matrix2.disjunctionAllRows();
-    cout << "Конъюнкция всех строк: " << conj << endl;
-    cout << "Дизъюнкция всех строк: " << disj << endl;
+    cout << "РљРѕРЅСЉСЋРЅРєС†РёСЏ РІСЃРµС… СЃС‚СЂРѕРє: " << conj << endl;
+    cout << "Р”РёР·СЉСЋРЅРєС†РёСЏ РІСЃРµС… СЃС‚СЂРѕРє: " << disj << endl;
 
-    // 5. Тестирование изменения битов
-    cout << "\n5. Тестирование изменения битов:" << endl;
+    // 5. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РёР·РјРµРЅРµРЅРёСЏ Р±РёС‚РѕРІ
+    cout << "\n5. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РёР·РјРµРЅРµРЅРёСЏ Р±РёС‚РѕРІ:" << endl;
 
-    cout << "Исходная matrix2:" << endl;
+    cout << "РСЃС…РѕРґРЅР°СЏ matrix2:" << endl;
     cout << matrix2;
 
     matrix2.invertBit(0, 0);
-    cout << "\nПосле инверсии бита [0][0]:" << endl;
+    cout << "\nРџРѕСЃР»Рµ РёРЅРІРµСЂСЃРёРё Р±РёС‚Р° [0][0]:" << endl;
     cout << matrix2;
 
     matrix2.setBit(0, 1, true);
-    cout << "\nПосле установки бита [0][1] в true:" << endl;
+    cout << "\nРџРѕСЃР»Рµ СѓСЃС‚Р°РЅРѕРІРєРё Р±РёС‚Р° [0][1] РІ true:" << endl;
     cout << matrix2;
 
     matrix2.invertBits(2, 1, 2);
-    cout << "\nПосле инверсии 2 битов в строке 2, начиная с позиции 1:" << endl;
+    cout << "\nРџРѕСЃР»Рµ РёРЅРІРµСЂСЃРёРё 2 Р±РёС‚РѕРІ РІ СЃС‚СЂРѕРєРµ 2, РЅР°С‡РёРЅР°СЏ СЃ РїРѕР·РёС†РёРё 1:" << endl;
     cout << matrix2;
 
     matrix2.setBits(0, 2, 2, false);
-    cout << "\nПосле установки 2 битов в строке 0 в false, начиная с позиции 2:" << endl;
+    cout << "\nРџРѕСЃР»Рµ СѓСЃС‚Р°РЅРѕРІРєРё 2 Р±РёС‚РѕРІ РІ СЃС‚СЂРѕРєРµ 0 РІ false, РЅР°С‡РёРЅР°СЏ СЃ РїРѕР·РёС†РёРё 2:" << endl;
     cout << matrix2;
 
-    // 6. Тестирование swap
-    cout << "\n6. Тестирование swap:" << endl;
+    // 6. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ swap
+    cout << "\n6. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ swap:" << endl;
     BooleanMatrix matrixA(2, 2, true);
     BooleanMatrix matrixB(2, 2, false);
 
-    cout << "До swap:" << endl;
+    cout << "Р”Рѕ swap:" << endl;
     cout << "\nmatrixA:" << endl << matrixA;
     cout << "\nmatrixB:" << endl << matrixB;
 
     matrixA.swap(matrixB);
 
-    cout << "После swap:" << endl;
+    cout << "РџРѕСЃР»Рµ swap:" << endl;
     cout << "\nmatrixA:" << endl << matrixA;
     cout << "\nmatrixB:" << endl << matrixB;
 
-    // 7. Тестирование оператора присваивания
-    cout << "\n7. Тестирование оператора присваивания:" << endl;
+    // 7. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РѕРїРµСЂР°С‚РѕСЂР° РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
+    cout << "\n7. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РѕРїРµСЂР°С‚РѕСЂР° РїСЂРёСЃРІР°РёРІР°РЅРёСЏ:" << endl;
     BooleanMatrix matrix4;
     matrix4 = matrix2;
-    cout << "\nmatrix4 (присвоено matrix2):" << endl;
+    cout << "\nmatrix4 (РїСЂРёСЃРІРѕРµРЅРѕ matrix2):" << endl;
     cout << matrix4;
 
-    // 8. Тестирование побитовых операторов
-    cout << "\n8. Тестирование побитовых операторов:" << endl;
+    // 8. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РїРѕР±РёС‚РѕРІС‹С… РѕРїРµСЂР°С‚РѕСЂРѕРІ
+    cout << "\n8. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РїРѕР±РёС‚РѕРІС‹С… РѕРїРµСЂР°С‚РѕСЂРѕРІ:" << endl;
 
     const char* charMatrix5[] = { "1100", "1010", "0110" };
     const char* charMatrix6[] = { "1010", "0101", "1100" };
@@ -121,13 +123,13 @@ int main()
     BooleanMatrix resultNot = ~matrix5;
     cout << "\n~matrix5:" << endl << resultNot;
 
-    // 9. Тестирование составных присваиваний
-    cout << "\n9. Тестирование присваиваний:" << endl;
+    // 9. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ СЃРѕСЃС‚Р°РІРЅС‹С… РїСЂРёСЃРІР°РёРІР°РЅРёР№
+    cout << "\n9. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РїСЂРёСЃРІР°РёРІР°РЅРёР№:" << endl;
 
     BooleanMatrix matrix7(charMatrix5, 3);
     BooleanMatrix matrix8(charMatrix6, 3);
 
-    cout << "matrix7 исходный:" << endl << matrix7;
+    cout << "matrix7 РёСЃС…РѕРґРЅС‹Р№:" << endl << matrix7;
     matrix7 &= matrix8;
     cout << "\nmatrix7 &= matrix8:" << endl << matrix7;
 
@@ -139,20 +141,20 @@ int main()
     matrix7 ^= matrix8;
     cout << "\nmatrix7 ^= matrix8:" << endl << matrix7;
 
-    // 10. Тестирование оператора индексации
-    cout << "\n10. Тестирование оператора индексации:" << endl;
+    // 10. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РѕРїРµСЂР°С‚РѕСЂР° РёРЅРґРµРєСЃР°С†РёРё
+    cout << "\n10. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РѕРїРµСЂР°С‚РѕСЂР° РёРЅРґРµРєСЃР°С†РёРё:" << endl;
     cout << "matrix2[0]: " << matrix2[0] << endl;
 
     matrix2[0][0] = true;
-    cout << "\nПосле matrix2[0][0] = true:" << endl;
+    cout << "\nРџРѕСЃР»Рµ matrix2[0][0] = true:" << endl;
     cout << matrix2;
 
-    // 11. Тестирование потокового ввода и вывода
-    cout << "\n11. Тестирование потокового ввода и вывода:" << endl;
+    // 11. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РїРѕС‚РѕРєРѕРІРѕРіРѕ РІРІРѕРґР° Рё РІС‹РІРѕРґР°
+    cout << "\n11. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ РїРѕС‚РѕРєРѕРІРѕРіРѕ РІРІРѕРґР° Рё РІС‹РІРѕРґР°:" << endl;
     BooleanMatrix matrixIn;
-    cout << "Введите матрицу:" << endl;
+    cout << "Р’РІРµРґРёС‚Рµ РјР°С‚СЂРёС†Сѓ:" << endl;
     cin >> matrixIn;
 
-    cout << "Вы ввели матрицу:" << endl;
+    cout << "Р’С‹ РІРІРµР»Рё РјР°С‚СЂРёС†Сѓ:" << endl;
     cout << matrixIn;
 }
