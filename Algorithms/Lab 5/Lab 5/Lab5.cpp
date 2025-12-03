@@ -8,24 +8,72 @@
 
 using namespace std;
 
+// Счётчики для быстрой сортировки
+long long quick_comparisons = 0;
+long long quick_swaps = 0;
+
+// Сброс счётчиков быстрой сортировки
+void resetQuickSortCounters() {
+    quick_comparisons = 0;
+    quick_swaps = 0;
+}
+
 // Функция быстрой сортировки (алгоритм Хоара)
 void quicksort(vector<int>& A, int l, int r) {
     if (l >= r) return;
 
     int x = A[(l + r) / 2];
     int i = l, j = r;
+
     while (i <= j) {
-        while (A[i] < x) i++;
-        while (A[j] > x) j--;
+        while (i <= r) {
+            quick_comparisons++;
+            if (A[i] < x) i++;
+            else break;
+        }
+
+        while (j >= l) {
+            quick_comparisons++;
+            if (A[j] > x) j--;
+            else break;
+        }
+
         if (i <= j) {
             swap(A[i], A[j]);
+            quick_swaps++;
             i++;
             j--;
         }
     }
+
     // Рекурсивные вызовы
     if (l < j) quicksort(A, l, j);
     if (i < r) quicksort(A, i, r);
+}
+
+// Функция сортировки пузырьком
+pair<long long, long long> bubbleSort(vector<int>& arr) {
+    long long bubble_comparisons = 0;
+    long long bubble_swaps = 0;
+
+    int n = arr.size();
+    bool swapped;
+
+    for (int i = 0; i < n - 1; i++) {
+        swapped = false;
+        for (int j = 0; j < n - i - 1; j++) {
+            bubble_comparisons++;
+            if (arr[j] > arr[j + 1]) {
+                swap(arr[j], arr[j + 1]);
+                bubble_swaps++;
+                swapped = true;
+            }
+        }
+        // Если на этой итерации не было обменов, массив уже отсортирован
+        if (!swapped) break;
+    }
+
+    return { bubble_comparisons, bubble_swaps };
 }
 
 // Функция для чтения массива из файла
@@ -65,6 +113,11 @@ std::vector<std::vector<int>> readArraysFromFiles(const std::vector<std::string>
 
 // Функция для вывода массива
 void printArray(const std::vector<int>& arr) {
+    if (arr.size() > 100) {
+        std::cout << "[массив слишком велик для вывода, размер: " << arr.size() << "]" << std::endl;
+        return;
+    }
+
     for (size_t i = 0; i < arr.size(); ++i) {
         std::cout << arr[i] << " ";
     }
@@ -94,24 +147,41 @@ std::vector<int> generateRandomArray(int size, int min_val, int max_val) {
     return arr;
 }
 
-// Тестирование
-double testSort(const vector<int>& testArray) {
-    vector<int> arr = testArray; // создание копии для тестирования
+// Тестирование быстрой сортировки
+pair<double, pair<long long, long long>> testQuickSort(vector<int> testArray) {
+
+    resetQuickSortCounters(); // Сбрасываем счётчики перед тестом
 
     chrono::high_resolution_clock::time_point timeStart = chrono::high_resolution_clock::now();
 
-    // Вызов быстрой сортировки
-    quicksort(arr, 0, (int)arr.size() - 1);
+    quicksort(testArray, 0, (int)testArray.size() - 1);
 
     chrono::high_resolution_clock::time_point timeEnd = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = timeEnd - timeStart;
 
-    if (!isSorted(arr)) {
+    if (!isSorted(testArray)) {
         cout << "Ошибка: массив не отсортирован!" << endl;
-        return -1.0;
+        return { -1.0, {-1, -1} };
     }
 
-    return duration.count();
+    return { duration.count(), {quick_comparisons, quick_swaps} };
+}
+
+// Тестирование сортировки пузырьком
+pair<double, pair<long long, long long>> testBubbleSort(vector<int> testArray) {
+    chrono::high_resolution_clock::time_point timeStart = chrono::high_resolution_clock::now();
+
+    auto bubbleStats = bubbleSort(testArray);
+
+    chrono::high_resolution_clock::time_point timeEnd = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = timeEnd - timeStart;
+
+    if (!isSorted(testArray)) {
+        cout << "Ошибка: массив не отсортирован!" << endl;
+        return { -1.0, {-1, -1} };
+    }
+
+    return { duration.count(), bubbleStats };
 }
 
 int main() {
@@ -147,13 +217,34 @@ int main() {
 
         for (size_t i = 0; i < testArrays.size(); ++i) {
             cout << "Тестовый массив " << i + 1 << " (размер: " << testArrays[i].size() << "):" << endl;
-    
+
+            // Тестирование быстрой сортировки
+            cout << "  Быстрая сортировка (Хоар):" << endl;
             for (int attempt = 1; attempt <= 3; attempt++) {
-                double time = testSort(testArrays[i]);
-                if (time >= 0) {
-                    cout << "  Попытка " << attempt << ": время = " << time << " секунд" << endl;
+                auto result = testQuickSort(testArrays[i]);
+                if (result.first >= 0) {
+                    cout << "    Попытка " << attempt << ": время = " << result.first
+                        << " секунд, сравнений = " << result.second.first
+                        << ", обменов = " << result.second.second << endl;
                 }
             }
+
+            // Тестирование сортировки пузырьком
+            cout << "  Сортировка пузырьком:" << endl;
+            if (testArrays[i].size() <= 100000) {
+                for (int attempt = 1; attempt <= 3; attempt++) {
+                    auto result = testBubbleSort(testArrays[i]);
+                    if (result.first >= 0) {
+                        cout << "    Попытка " << attempt << ": время = " << result.first
+                            << " секунд, сравнений = " << result.second.first
+                            << ", обменов = " << result.second.second << endl;
+                    }
+                }
+            }
+            else {
+                cout << "    ПРОПУЩЕНО (массив слишком большой для пузырьковой сортировки)" << endl;
+            }
+
             cout << endl;
         }
     }
@@ -176,14 +267,30 @@ int main() {
         cout << "Сгенерированный массив: ";
         printArray(randomArray);
 
-        cout << "Тестирование случайного массива (размер: " << size << "):" << endl;
-        double time = testSort(randomArray);
-        if (time >= 0) {
-            cout << "Время = " << time << " секунд" << endl;
+        cout << "\nТестирование сортировок (размер: " << size << "):" << endl;
+
+        // Тестирование быстрой сортировки
+        cout << "Быстрая сортировка (Хоар):" << endl;
+        auto quickResult = testQuickSort(randomArray);
+        if (quickResult.first >= 0) {
+            cout << "   Время = " << quickResult.first << " секунд" << endl;
+            cout << "   Сравнений = " << quickResult.second.first << endl;
+            cout << "   Обменов = " << quickResult.second.second << endl;
         }
 
-        cout << "Отсортированный массив: ";
-        printArray(randomArray);
+        // Тестирование сортировки пузырьком
+        cout << "\nСортировка пузырьком:" << endl;
+        if (size <= 100000) {
+            auto bubbleResult = testBubbleSort(randomArray);
+            if (bubbleResult.first >= 0) {
+                cout << "   Время = " << bubbleResult.first << " секунд" << endl;
+                cout << "   Сравнений = " << bubbleResult.second.first << endl;
+                cout << "   Обменов = " << bubbleResult.second.second << endl;
+            }
+        }
+        else {
+            cout << "   ПРОПУЩЕНО (массив слишком большой для пузырьковой сортировки)" << endl;
+        }
     }
     else {
         cout << "Неверный выбор!" << endl;
