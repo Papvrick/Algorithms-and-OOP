@@ -157,4 +157,33 @@ int main()
 
     cout << "Вы ввели матрицу:" << endl;
     cout << matrixIn;
+
+    // 12. Тестирование обмена строк и столбцов
+    cout << "\n12. Тестирование обмена строк и столбцов:" << endl;
+
+    const char* testMatrix[] = {
+        "1010",
+        "0101",
+        "1100",
+        "0011"
+    };
+    BooleanMatrix matrixTest(testMatrix, 4);
+
+    cout << "\nИсходная матрица:" << endl;
+    cout << matrixTest;
+
+    // Тестирование обмена строк
+    matrixTest.swapRows(0, 2);
+    cout << "\nПосле обмена строк 0 и 2:" << endl;
+    cout << matrixTest;
+
+    matrixTest.swapRows(0, 2);
+    cout << "\nПосле возврата к исходному состоянию:" << endl;
+    cout << matrixTest;
+
+    // Тестирование обмена столбцов
+    matrixTest.swapColumns(1, 3);
+    cout << "\nПосле обмена столбцов 1 и 3:" << endl;
+    cout << matrixTest;
+
 }

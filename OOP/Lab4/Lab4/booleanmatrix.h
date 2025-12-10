@@ -45,6 +45,12 @@ public:
 
     void addRow(const BooleanVector& row);   // Публичный метод для добавления строк
 
+    // Обмен строк
+    void swapRows(uint32_t rowIndex1, uint32_t rowIndex2);
+
+    // Обмен столбцов
+    void swapColumns(uint32_t colIndex1, uint32_t colIndex2);
+
 private:
     DynamicArray<BooleanVector> matrixData_;
 };

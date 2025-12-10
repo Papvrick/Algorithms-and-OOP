@@ -256,3 +256,51 @@ std::istream& operator>>(std::istream& is, BooleanMatrix& matrix)
     matrix = temp;
     return is;
 }
+
+// Обмен строк
+void BooleanMatrix::swapRows(uint32_t rowIndex1, uint32_t rowIndex2)
+{
+    if (rowIndex1 >= matrixData_.getLength() || rowIndex2 >= matrixData_.getLength())
+    {
+        throw std::runtime_error("Индекс строки за пределами матрицы");
+    }
+
+    if (rowIndex1 == rowIndex2)
+    {
+        return; 
+    }
+
+    BooleanVector temp = matrixData_[rowIndex1];
+    matrixData_[rowIndex1] = matrixData_[rowIndex2];
+    matrixData_[rowIndex2] = temp;
+}
+
+// Обмен столбцов 
+void BooleanMatrix::swapColumns(uint32_t colIndex1, uint32_t colIndex2)
+{
+    uint32_t numCols = numColumns();
+
+    if (numCols == 0)
+    {
+        throw std::runtime_error("Матрица не содержит столбцов");
+    }
+
+    if (colIndex1 >= numCols || colIndex2 >= numCols)
+    {
+        throw std::runtime_error("Индекс столбца за пределами матрицы");
+    }
+
+    if (colIndex1 == colIndex2)
+    {
+        return;
+    }
+
+    for (uint32_t row = 0; row < matrixData_.getLength(); ++row)
+    {
+        bool value1 = matrixData_[row][colIndex1];
+        bool value2 = matrixData_[row][colIndex2];
+
+        matrixData_[row].setBit(colIndex1, value2);
+        matrixData_[row].setBit(colIndex2, value1);
+    }
+}
