@@ -4,8 +4,12 @@
 #include <chrono>
 #include <fstream>
 #include <string>
+#include <Windows.h>
 
 using namespace std;
+
+// Счетчик для пирмамидальной сортировки
+long long pyramidComparisons = 0;
 
 // Просеивание вниз 
 void siftDown(vector<int>& x, int start, int end) {
@@ -16,10 +20,12 @@ void siftDown(vector<int>& x, int start, int end) {
         int swapInd = root;        // Начинаем обменивать с корня
 
         // Сравниваем с левым потомком
+        pyramidComparisons++;
         if (x[swapInd] < x[left])
             swapInd = left;
 
         // Сравниваем с правым потомком (если он существует)
+        pyramidComparisons++;
         if (right <= end && x[swapInd] < x[right])
             swapInd = right;
 
@@ -31,8 +37,7 @@ void siftDown(vector<int>& x, int start, int end) {
     }
 }
 
-
-// 1) Построение пирамиды
+// Построение пирамиды
 void buildPyramid(vector<int>& x) {
     int n = x.size();
     // Просеивание половины массива
@@ -41,13 +46,40 @@ void buildPyramid(vector<int>& x) {
     }
 }
 
-// 2) Сортировка 
+// Пирамидальная сортировка 
 void pyramidSort(vector<int>& x) {
+    pyramidComparisons = 0;
     int n = x.size();
     buildPyramid(x);
-    for (int k = n - 1; k > 0; k--) {        // k - индекс последнего элемента в еще не отсортированной части массива 
+    for (int k = n - 1; k > 0; k--) {
         swap(x[0], x[k]);
         siftDown(x, 0, k - 1);
+    }
+}
+
+// Счетчик для прямого выбора
+long long selectionComparisons = 0;
+
+// Сортировка прямым выбором
+void selectionSort(vector<int>& x) {
+    selectionComparisons = 0;
+    int n = x.size();
+
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;
+
+        // Поиск минимального элемента в неотсортированной части
+        for (int j = i + 1; j < n; j++) {
+            selectionComparisons++;
+            if (x[j] < x[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        // Обмен местами найденного минимального элемента с первым элементом
+        if (minIndex != i) {
+            swap(x[i], x[minIndex]);
+        }
     }
 }
 
@@ -61,10 +93,10 @@ bool isSorted(const vector<int>& arr) {
 
 int main()
 {
-    setlocale(LC_ALL, "Russian");
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
     while (true) {
-
-        vector<int> x;
+        vector<int> x, y;
         int rangeStart, rangeEnd, numValues;
         cout << "Введите диапазон случайных чисел (начало и конец): ";
         cin >> rangeStart >> rangeEnd;
@@ -76,46 +108,38 @@ int main()
         uniform_int_distribution<> dist(rangeStart, rangeEnd);
 
         x.resize(numValues);
+        y.resize(numValues);
         for (int i = 0; i < numValues; i++) {
-            x[i] = dist(gen);
+            int value = dist(gen);
+            x[i] = value;
+            y[i] = value;
         }
 
-#if 0
-        // Вывод исходного массива
-        cout << "\nСгенерированный массив:\n";
-        for (int i = 0; i < x.size(); i++) {
-            cout << x[i] << " ";
-        }
-        cout << "\n";
+        // Тестирование сортировки прямым выбором
+        cout << "\nТестирование сортировки прямым выбором:" << endl;
+        chrono::high_resolution_clock::time_point start1 = chrono::high_resolution_clock::now();
 
-#endif
-        // Замер времени и сортировка
-        chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
+        selectionSort(y);
+
+        chrono::high_resolution_clock::time_point end1 = chrono::high_resolution_clock::now();
+        chrono::duration<double> duration1 = end1 - start1;
+
+        cout << "   Время сортировки: " << duration1.count() << " секунд" << endl;
+        cout << "   Количество сравнений: " << selectionComparisons << endl;
+        cout << "   Корректность сортировки: " << (isSorted(y) ? "Да" : "Нет") << endl;
+
+        // Тестирование пирамидальной сортировки
+        cout << "\nТестирование пирамидальной сортировка:" << endl;
+        chrono::high_resolution_clock::time_point start2 = chrono::high_resolution_clock::now();
 
         pyramidSort(x);
 
-        chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
+        chrono::high_resolution_clock::time_point end2 = chrono::high_resolution_clock::now();
+        chrono::duration<double> duration2 = end2 - start2;
 
-        chrono::duration<double> duration = end - start;
-        cout << "\nВремя сортировки: " << duration.count() << " секунд";
-
-#if 0
-        // Вывод отсортированного массива
-        cout << "\nОтсортированный массив:\n";
-        for (int i = 0; i < x.size(); i++) {
-            cout << x[i] << " ";
-        }
-#endif
-        cout << "\n";
-        cout << "\n";
-
-
-        cout << "Отсортирован ли массив? ";
-        if (isSorted(x))
-            cout << "Да";
-        else
-            cout << "Нет";
-        cout << endl;
+        cout << "   Время сортировки: " << duration2.count() << " секунд" << endl;
+        cout << "   Количество сравнений: " << pyramidComparisons << endl;
+        cout << "   Корректность сортировки: " << (isSorted(x) ? "Да" : "Нет") << endl;
 
         char choice;
         cout << "\nПродолжить? (y/n): ";
