@@ -5,8 +5,10 @@
 using namespace std;
 
 
-//Функция получения первого вхождения подстроки в тексте
-int findFirstInd(const string& s, const string& p) {
+// Функция получения первого вхождения подстроки в тексте (алгоритм Бойера-Мура)
+int findFirstInd(const string& s, const string& p, int& comparisonCount) {
+    comparisonCount = 0; 
+
     int n = s.size();
     int m = p.size();
 
@@ -20,6 +22,7 @@ int findFirstInd(const string& s, const string& p) {
         k = i;
         j = m - 1;
         while (j >= 0) {
+            comparisonCount++; 
             if (s[k] == p[j]) {
                 j--;
                 k--;
@@ -35,10 +38,10 @@ int findFirstInd(const string& s, const string& p) {
     else return -1;
 }
 
-//Функция получения индексов всех вхождений подстроки в тексте
-vector<int> findAllInd(const string& s, const string& p)
-{
+// Функция получения индексов всех вхождений подстроки в тексте (алгоритм Бойера-Мура)
+vector<int> findAllInd(const string& s, const string& p, int& comparisonCount) {
     vector<int> results;
+    comparisonCount = 0; 
 
     int n = s.size();
     int m = p.size();
@@ -55,6 +58,7 @@ vector<int> findAllInd(const string& s, const string& p)
         j = m - 1;
         while (j >= 0) // j бежит с конца паттерна
         {
+            comparisonCount++; 
             if (s[k] == p[j]) // есть совпадение
             {
                 j--;
@@ -75,10 +79,10 @@ vector<int> findAllInd(const string& s, const string& p)
     return results;
 }
 
-//Функция получения индексов вхождений подстроки в тексте в заданном диапазоне
-vector<int> findAllInRangeInd(const string& s, const string& p, int start, int end)
-{
+// Функция получения индексов вхождений подстроки в тексте в заданном диапазоне (алгоритм Бойера-Мура)
+vector<int> findAllInRangeInd(const string& s, const string& p, int start, int end, int& comparisonCount) {
     vector<int> results;
+    comparisonCount = 0; 
 
     if (p.empty() || s.empty() || start > end || start < 0 || end >= s.size()) {
         return results;
@@ -104,6 +108,7 @@ vector<int> findAllInRangeInd(const string& s, const string& p, int start, int e
         j = m - 1;
         while (j >= 0)
         {
+            comparisonCount++; 
             if (s[k] == p[j])
             {
                 j--;
@@ -124,6 +129,35 @@ vector<int> findAllInRangeInd(const string& s, const string& p, int start, int e
     return results;
 }
 
+// Функция прямого поиска
+vector<int> directSearch(const string& s, const string& p, int& comparisonCount) {
+    vector<int> results;
+    comparisonCount = 0; 
+
+    int n = s.size();
+    int m = p.size();
+
+    if (n < m || m == 0) {
+        return results;
+    }
+
+    // Прямой поиск
+    for (int i = 0; i <= n - m; i++) {
+        bool found = true;
+        for (int j = 0; j < m; j++) {
+            comparisonCount++; 
+            if (s[i + j] != p[j]) {
+                found = false;
+                break;
+            }
+        }
+        if (found) {
+            results.push_back(i);
+        }
+    }
+
+    return results;
+}
 
 int main()
 {
@@ -131,6 +165,13 @@ int main()
     string s, p;
     vector<int> second;
     vector<int> third;
+
+    int comparisonCountDirect = 0;
+    int comparisonCountBMFirst = 0;
+    int comparisonCountBMAll = 0;
+    int comparisonCountBMRange = 0;
+
+    vector<int> directResults;
 
     cout << "Enter text for comparison: ";
     getline(cin, s);
@@ -165,29 +206,63 @@ int main()
         return -1;
     }
 
-    first = findFirstInd(s, p);
-    second = findAllInd(s, p);
-    third = findAllInRangeInd(s, p, start, end);
+    // Поиск с использованием алгоритма Бойера-Мура
+    first = findFirstInd(s, p, comparisonCountBMFirst);
+    second = findAllInd(s, p, comparisonCountBMAll);
+    third = findAllInRangeInd(s, p, start, end, comparisonCountBMRange);
 
+    // Поиск с использованием прямого алгоритма
+    directResults = directSearch(s, p, comparisonCountDirect);
+
+    // Вывод результатов алгоритма Бойера-Мура
     if (first == -1) {
-        cout << "Pattern wasn't found in the text";
-        return 0;
+        cout << "Pattern wasn't found in the text (Boyer-Moore)" << endl;
     }
-    else cout << "Pattern was found in the text, the index of the first occurrence: " << first << endl;
-
-    if (second.size() < 2) cout << "Pattern appears in the text once" << endl;
     else {
-        cout << "Indexes of all occurrences: [ ";
+        cout << "Pattern was found in the text (Boyer-Moore), the index of the first occurrence: " << first << endl;
+    }
+    cout << "Number of comparisons for Boyer-Moore (first occurrence): " << comparisonCountBMFirst << endl;
+
+    if (second.size() < 2) {
+        cout << "Pattern appears in the text once (Boyer-Moore)" << endl;
+    }
+    else {
+        cout << "Indexes of all occurrences (Boyer-Moore): [ ";
         for (int ind = 0; ind < second.size(); ind++) cout << second[ind] << " ";
         cout << "]" << endl;
     }
+    cout << "Number of comparisons for Boyer-Moore (all occurrences): " << comparisonCountBMAll << endl;
 
-    if (third.size() == 0) cout << "There are no occurrences in the specified range";
+    if (third.size() == 0) {
+        cout << "There are no occurrences in the specified range (Boyer-Moore)" << endl;
+    }
     else {
-        cout << "Indexes of occurrences in a given range: [ ";
+        cout << "Indexes of occurrences in a given range (Boyer-Moore): [ ";
         for (int ind = 0; ind < third.size(); ind++) cout << third[ind] << " ";
         cout << "]" << endl;
     }
+    cout << "Number of comparisons for Boyer-Moore (range search): " << comparisonCountBMRange << endl;
+
+    cout << endl;
+
+    // Вывод результатов прямого поиска
+    if (directResults.empty()) {
+        cout << "Pattern wasn't found in the text (Direct Search)" << endl;
+    }
+    else {
+        cout << "Pattern was found in the text (Direct Search), the index of the first occurrence: " << directResults[0] << endl;
+    }
+
+    if (directResults.size() < 2) {
+        cout << "Pattern appears in the text once (Direct Search)" << endl;
+    }
+    else {
+        cout << "Indexes of all occurrences (Direct Search): [ ";
+        for (int ind = 0; ind < directResults.size(); ind++) cout << directResults[ind] << " ";
+        cout << "]" << endl;
+    }
+
+    cout << "Number of comparisons for direct search: " << comparisonCountDirect << endl;
 
     return 0;
 }
