@@ -39,20 +39,28 @@ int findFirstInd(const string& s, const string& p, int& comparisonCount) {
 }
 
 // Функция получения индексов всех вхождений подстроки в тексте (алгоритм Бойера-Мура)
-vector<int> findAllInd(const string& s, const string& p, int& comparisonCount) {
+vector<int> findAllInd(const string& s, const string& p, int& comparisonCount, int start, int end) {
     vector<int> results;
     comparisonCount = 0; 
 
-    int n = s.size();
+    if (p.empty() || s.empty() || start > end || start < 0 || end >= s.size()) {
+        return results;
+    }
+    
+    int n = end - start + 1;
     int m = p.size();
+
+    if (m > n){
+        return results;
+    }
 
     int TAB[256];
     for (int i = 0; i < 256; i++) TAB[i] = m;
     for (int i = 0; i < m - 1; i++) TAB[p[i]] = m - 1 - i;
 
-    int i = m - 1, j;
+    int i = start + m - 1, j = m - 1;
     int k;
-    while (i < n) // не конец строки
+    while (i <= end) // не конец строки
     {
         k = i;
         j = m - 1;
@@ -82,7 +90,7 @@ vector<int> findAllInd(const string& s, const string& p, int& comparisonCount) {
 // Функция получения индексов вхождений подстроки в тексте в заданном диапазоне (алгоритм Бойера-Мура)
 vector<int> findAllInRangeInd(const string& s, const string& p, int start, int end, int& comparisonCount) {
     vector<int> results;
-    comparisonCount = 0; 
+    comparisonCount = 0;
 
     if (p.empty() || s.empty() || start > end || start < 0 || end >= s.size()) {
         return results;
@@ -102,13 +110,13 @@ vector<int> findAllInRangeInd(const string& s, const string& p, int start, int e
 
     int i = start + m - 1, j = m - 1; // i - граница начала
     int k;
-    while (i < end) // граница конца
+    while (i <= end) // граница конца
     {
         k = i;
         j = m - 1;
         while (j >= 0)
         {
-            comparisonCount++; 
+            comparisonCount++;
             if (s[k] == p[j])
             {
                 j--;
@@ -128,6 +136,8 @@ vector<int> findAllInRangeInd(const string& s, const string& p, int start, int e
     }
     return results;
 }
+
+
 
 // Функция прямого поиска
 vector<int> directSearch(const string& s, const string& p, int& comparisonCount) {
@@ -205,10 +215,10 @@ int main()
         cerr << endl << "Error: incorrect range input";
         return -1;
     }
-
+     
     // Поиск с использованием алгоритма Бойера-Мура
     first = findFirstInd(s, p, comparisonCountBMFirst);
-    second = findAllInd(s, p, comparisonCountBMAll);
+    second = findAllInd(s, p, comparisonCountBMAll, start, end); // Здесь была ошибка, нужно было добавить аргументы start, end
     third = findAllInRangeInd(s, p, start, end, comparisonCountBMRange);
 
     // Поиск с использованием прямого алгоритма
